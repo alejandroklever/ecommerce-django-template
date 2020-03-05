@@ -76,7 +76,7 @@ class CrearProducto(CreateView):
     model = Stock
     template_name = 'producto_crear_editar.html'
     form_class = StockForm
-    form_class2 = ProductoForm
+    second_form_class = ProductoForm
     success_url = reverse_lazy('tienda:mostrar-tienda')
 
     def get_context_data(self, **kwargs):
@@ -86,7 +86,7 @@ class CrearProducto(CreateView):
         if 'form_stock' not in context:
             context['form_stock'] = self.form_class(self.request.GET)
         if 'form_producto' not in context:
-            context['form_producto'] = self.form_class2(self.request.GET)
+            context['form_producto'] = self.second_form_class(self.request.GET)
         return context
 
     def post(self, request, *args, **kwargs):
@@ -94,7 +94,7 @@ class CrearProducto(CreateView):
         self.object = self.get_object
 
         form_stock = self.form_class(request.POST)
-        form_producto = self.form_class2(request.POST)
+        form_producto = self.second_form_class(request.POST)
         if form_producto.is_valid() and form_stock.is_valid():
             stock = form_stock.save(commit=False)
             stock.producto = form_producto.save()
@@ -108,10 +108,10 @@ class CrearProducto(CreateView):
 # noinspection PyAttributeOutsideInit
 class EditarProducto(UpdateView):
     model = Stock
-    model2 = Producto
+    second_model = Producto
     template_name = 'producto_crear_editar.html'
     form_class = StockForm
-    form_class2 = ProductoForm
+    second_form_class = ProductoForm
     success_url = reverse_lazy('tienda:mostrar-tienda')
 
     def get_context_data(self, **kwargs):
@@ -119,28 +119,27 @@ class EditarProducto(UpdateView):
 
         stock_id = self.kwargs.get('pk', 0)
         stock = self.model.objects.get(id=stock_id)
-        producto = self.model2.objects.get(id=stock.producto.id)
+        producto = self.second_model.objects.get(id=stock.producto.id)
 
+        # (SAVE-LINE) Las plantillas no renderizan los campos FloatField
+        producto.strprecio = str(producto.precio)
         context['accion'] = 'Editar'
         context['message'] = 'Edite su Producto'
-        context['nombre'] = producto.nombre
-        context['precio'] = str(producto.precio)
-        context['descripcion'] = producto.descripcion
-        context['imagen'] = producto.imagen
-        context['cantidad'] = stock.cantidad
+        context['producto'] = producto
+        context['stock'] = stock
 
         return context
 
     def post(self, request, *args, **kwargs):
-        # LIFE-SAVE LINE
+        # SAVE-LINE
         self.object = self.get_object
 
         stock_id = kwargs['pk']
         stock = self.model.objects.get(id=stock_id)
-        producto = self.model2.objects.get(id=stock.producto.id)
+        producto = self.second_model.objects.get(id=stock.producto.id)
 
         form_stock = self.form_class(request.POST, instance=stock)
-        form_producto = self.form_class2(request.POST, instance=producto)
+        form_producto = self.second_form_class(request.POST, instance=producto)
 
         if form_stock.is_valid() and form_producto.is_valid():
             form_stock.save()
