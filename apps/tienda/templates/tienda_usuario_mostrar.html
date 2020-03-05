@@ -1,0 +1,51 @@
+{% extends 'index-unlogged.html' %}
+
+
+
+{% block title %} {{ nombre_tienda }} {% endblock %}
+
+{% block Content %}
+    <div style="padding-left: 3rem;padding-top: 3rem;">
+        <h3><strong>Administracion de <b>{{ nombre_tienda }}</b></strong></h3>
+        {% if user_stock_list %}
+            <div  style="padding-top: 2rem">
+                <table class="table">
+                    <tr>
+                        <td style="padding-left: 10px"><strong>Nombre</strong></td>
+                        <td style="padding-left: 10px"><strong>Precio</strong></td>
+                        <td style="padding-left: 10px"><strong>Cantidad</strong></td>
+                        <td style="padding-left: 10px"></td>
+                        <td style="padding-left: 10px"></td>
+                    </tr>
+                    {% for stock in user_stock_list %}
+                        <tr>
+                            <td style="padding-left: 10px">{{ stock.producto.nombre }}</td>
+                            <td style="padding-left: 10px">{{ stock.producto.precio }}</td>
+                            <td style="padding-left: 10px">{{ stock.cantidad }}</td>
+                            <td>
+                                <button class="btn btn-secondary">
+                                    <a style="color: #171a1d;" href={% url 'tienda:editar-producto' stock.id %}>Editar</a>
+                                </button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">
+                                    <a style=" color: #171a1d;" href={% url 'tienda:borrar-producto' stock.producto.id %}>Eliminar</a>
+                                </button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        {% else %}
+            <h4 style="padding-left: 2rem;padding-top: 2rem">Agregue elementos a su tienda</h4>
+        {% endif %}
+
+        <footer style="padding-top: 3rem">
+            <button class="btn btn-primary bg-transparent">
+                <a style="color: #171a1d;" href={% url "tienda:crear-producto" %}>
+                    Agregar Producto
+                </a>
+            </button>
+        </footer>
+    </div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'index-unlogged.html' %}
+
+{% block title %} Mi Tienda {% endblock %}
+
+{% block Content %}
+<header>
+    <div><label>{{ message }}</label></div>
+</header>
+<form action="" method="post" style="padding-left: 2rem">
+    {% csrf_token %}
+    <div class="form-group">
+        <div class="form-label-group">
+            <input type="text" name="nombre" id="id_nombre" value="{{ nombre_tienda }}" class="form-control" autofocus="autofocus">
+            <label for="id_nombre">Nombre</label>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="form-label-group">
+            <input type="file"  name="foto" id="id_foto" value="{{ imagen_tienda }}" accept="image/*">
+            <label for="id_username">Foto</label>
+        </div>
+    </div>
+
+    <button class="btn btn-primary btn-block" type="submit">Actualizar</button>
+</form>
+{% endblock %}

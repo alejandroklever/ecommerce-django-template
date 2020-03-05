@@ -1,0 +1,43 @@
+{% extends 'login.html' %}
+
+{% block title %}Registrar Usuario{% endblock %}
+
+{% block card_header %}Registrar Usuario{% endblock %}
+
+{% block form %}
+<form method="post">
+    {% csrf_token %}
+    <div class="form-group">
+        <div class="form-label-group">
+            <input type="text"  name="username" id="id_username" class="form-control" placeholder="Nombre" required="required" autofocus="autofocus">
+            <label for="id_username">Nombre</label>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="form-label-group">
+            <input type="email" name="email" id="id_email" class="form-control" placeholder="E-Mail" required="required">
+            <label for="id_email">E-Mail</label>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="form-label-group">
+            <input type="password" name="password1" id="id_password1" class="form-control" placeholder="Clave" required="required">
+            <label for="id_password1">Clave</label>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="form-label-group">
+            <input type="password" name="password2" id="id_password2" class="form-control" placeholder="Confirmar Clave" required="required">
+            <label for="id_password2">Confirmar Clave</label>
+        </div>
+    </div>
+    <button class="btn btn-primary btn-block" type="submit">Registrar</button>
+</form>
+{% endblock %}
+
+{% block links %}
+<div class="text-center">
+    <a class="d-block small mt-3" href="{% url 'usuario:login' %}">Pagina de Login</a>
+    <a class="d-block small" href="{% url 'usuario:recuperar-clave' %}">Recuperar Clave?</a>
+</div>
+{% endblock %}

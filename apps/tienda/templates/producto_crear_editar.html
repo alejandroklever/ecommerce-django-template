@@ -1,0 +1,49 @@
+{% extends 'index-unlogged.html' %}
+
+{% block title %} Mi Tienda {% endblock %}
+
+{% block Content %}
+<header>
+    <div class="form-group">
+        <div class="form-label-group row1 col-lg-12">
+            <h2>{{ message }}</h2>
+        </div>
+    </div>
+</header>
+<form action="" method="post" style="padding-left: 2rem">
+    {% csrf_token %}
+
+    <div class="form-group">
+        <div class="form-label-group">
+            <input type="text" name="nombre" id="id_nombre" value="{{ nombre }}">
+            <label for="id_nombre">Nombre</label>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="form-label-group">
+            <input type="number" name="precio" id="id_precio" value="{{ precio }}" step="0.05">
+            <label for="id_precio"> Precio</label>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="form-label-group">
+            <input type="text" name="descripcion" id="id_descripcion" value="{{ descripcion }}">
+            <label for="id_descripcion">Descripcion</label>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="form-label-group">
+            <input type="file" name="foto" id="id_imagen" value="{{ imagen }}" accept="image/*">
+            <label for="id_imagen">Imagen</label>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="form-label-group">
+            <input type="number" name="cantidad" id="id_cantidad" value="{{ cantidad }}">
+            <label for="id_cantidad">Cantidad</label>
+        </div>
+    </div>
+
+    <button class="btn btn-primary" type="submit">{{ accion }}</button>
+</form>
+{% endblock %}

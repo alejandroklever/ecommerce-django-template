@@ -1,0 +1,9 @@
+# Created by .ignore support plugin (hsz.mobi)
+
+.vscode/
+.idea
+__pycache__
+
+# Archivos
+lapeseta.sqlite3
+
