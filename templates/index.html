@@ -94,7 +94,7 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href={% url 'tienda:listar-tiendas' %}>
+                    <a class="nav-link" href={% url 'compra:listar-tiendas' %}>
                         <i class="fas fa-fw fa-folder"></i>
                         <span>Ver Tiendas</span>
                     </a>
@@ -190,7 +190,8 @@
             <!-- /.container-fluid -->
             {% endblock %}
 
-            {% block Content %}{% endblock %}
+            {% block Content %}
+            {% endblock %}
 
             <!-- Sticky Footer -->
             <footer class="sticky-footer">

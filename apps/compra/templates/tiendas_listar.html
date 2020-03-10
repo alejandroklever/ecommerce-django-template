@@ -2,7 +2,7 @@
 
 
 
-{% block title %} Mi Tienda {% endblock %}
+{% block title %} Listado {% endblock %}
 
 {% block Content %}
     <div style="padding-left: 3rem;padding-top: 3rem;">
@@ -10,17 +10,17 @@
             <div  style="padding-top: 2rem">
                 <table class="table">
                     <tr>
-                        <td style="padding-left: 10px"><strong>Nombre</strong></td>
-                        <td style="padding-left: 10px"><strong>Image</strong></td>
-                        <td style="padding-left: 10px"></td>
+                        <td style="padding-left: 10px; padding-right: 10px"><strong>Nombre</strong></td>
+                        <td style="padding-left: 10px; padding-right: 10px"><strong>Image</strong></td>
+                        <td style="padding-left: 10px; padding-right: 10px"></td>
                     </tr>
                     {% for tienda in tiendas %}
                         <tr>
-                            <td style="padding-left: 10px">{{ tienda.nombre }}</td>
-                            <td style="padding-left: 10px">{{ tienda.imagen }}</td>
+                            <td style="padding-left: 10px; padding-right: 10px">{{ tienda.nombre }}</td>
+                            <td style="padding-left: 10px; padding-right: 10px">{{ tienda.imagen }}</td>
                             <td>
                                 <button class="btn btn-secondary">
-                                    <a style="color: #171a1d;" href={% url 'tienda:visitar-tienda' tienda.id %}>Entrar</a>
+                                    <a style="color: #171a1d;" href={% url 'compra:visitar-tienda' tienda.id %}>Entrar</a>
                                 </button>
                             </td>
                         </tr>

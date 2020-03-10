@@ -1,0 +1,54 @@
+{% extends 'index.html' %}
+
+
+
+{% block title %} {{ tienda.nombre }} {% endblock %}
+
+{% block Content %}
+    <div style="padding-left: 3rem;padding-top: 3rem;">
+        <h3><strong>Bienvenido a <b>{{ tienda.nombre }}</b></strong></h3>
+        {% if stock_list %}
+            <div  style="padding-top: 2rem">
+                <table class="table table-hover">
+                    <tr>
+                        <td ><strong>Nombre</strong></td>
+                        <td ><strong>Precio</strong></td>
+                        <td ><strong>Cantidad</strong></td>
+                        <td ></td>
+                        <td ></td>
+                    </tr>
+                    {% for stock in stock_list %}
+                        <tr>
+                            <td>{{ stock.producto.nombre }}</td>
+                            <td>{{ stock.producto.precio }}</td>
+                            <td>{{ stock.cantidad }}</td>
+                            <td>
+                                <button class="btn btn-secondary">
+                                    <a style="color: #171a1d;" href={% url 'compra:comprar' stock.id %}>Detalles</a>
+                                </button>
+                            </td>
+                            <td>
+                                <button class="btn btn-secondary">
+                                    <a style="color: #171a1d;" href={% url 'compra:comprar' stock.id %}>Comprar</a>
+                                </button>
+                            </td>
+                            <td>
+                                <button class="btn btn-secondary">
+                                    <a style="color: #171a1d;" href={% url 'compra:comprar' stock.id %}>Agregar al Carrito</a>
+                                </button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        {% endif %}
+
+        <footer style="padding-top: 3rem">
+            <button class="btn btn-primary bg-transparent">
+                <a style="color: #171a1d;" href={% url "compra:listar-tiendas" %}>
+                    Regresar
+                </a>
+            </button>
+        </footer>
+    </div>
+{% endblock %}

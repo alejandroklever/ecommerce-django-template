@@ -1,38 +1,15 @@
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.handlers.wsgi import WSGIRequest
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, ListView, UpdateView, DeleteView
+from django.views.generic import ListView, UpdateView, DeleteView, FormView
 
 from .forms import ActualizarTiendaForm, ProductoForm, StockForm
 from .models import Tienda, Producto, Stock
 
 
-class ListarTiendas(ListView):
-    model = Tienda
-    template_name = 'tiendas_listar.html'
-    context_object_name = 'tiendas'
-
-
-class VisitarTienda(ListView):
-    model = Tienda
-    model2 = Stock
-    template_name = 'tienda_visitar.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        tienda_id = self.kwargs.get('pk', 0)
-        tienda = self.model.objects.get(id=tienda_id)
-        stock_list = self.model2.objects.filter(tienda=tienda)
-        context['tienda'] = tienda
-        context['stock_list'] = stock_list
-
-        return context
-
-
 # noinspection PyAttributeOutsideInit
 class MostrarTienda(ListView):
-    model = Stock
     template_name = 'tienda_usuario_mostrar.html'
     context_object_name = 'user_stock_list'
 
@@ -45,9 +22,7 @@ class MostrarTienda(ListView):
             # Creamos Tienda por Defecto
             self.user.tienda = Tienda(nombre=f'Tienda de {self.user}', usuario=self.user)
             self.user.tienda.save()
-
-        query = self.model.objects.filter(tienda__usuario_id=self.user.id)
-        return query
+        return Stock.objects.filter(tienda__usuario_id=self.user.id)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -62,17 +37,11 @@ class EditarTienda(UpdateView):
     template_name = 'tienda_usuario_editar.html'
     form_class = ActualizarTiendaForm
     success_url = reverse_lazy('tienda:mostrar-tienda')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        self.user = self.request.user
-        context['nombre_tienda'] = self.user.tienda.nombre
-        context['imagen_tienda'] = self.user.tienda.imagen
-        return context
+    context_object_name = 'tienda'
 
 
 # noinspection PyAttributeOutsideInit
-class CrearProducto(CreateView):
+class CrearProducto(FormView):
     model = Stock
     template_name = 'producto_crear_editar.html'
     form_class = StockForm
@@ -90,11 +59,9 @@ class CrearProducto(CreateView):
         return context
 
     def post(self, request, *args, **kwargs):
-        # LIFE-SAVE LINE
-        self.object = self.get_object
-
         form_stock = self.form_class(request.POST)
         form_producto = self.second_form_class(request.POST)
+
         if form_producto.is_valid() and form_stock.is_valid():
             stock = form_stock.save(commit=False)
             stock.producto = form_producto.save()
@@ -106,44 +73,38 @@ class CrearProducto(CreateView):
 
 
 # noinspection PyAttributeOutsideInit
-class EditarProducto(UpdateView):
+class EditarProducto(FormView):
     model = Stock
-    second_model = Producto
     template_name = 'producto_crear_editar.html'
     form_class = StockForm
     second_form_class = ProductoForm
     success_url = reverse_lazy('tienda:mostrar-tienda')
 
+    def create_fields(self, **kwargs):
+        if not hasattr(self, 'stock'):
+            stock_id = kwargs['pk']
+            self.stock = self.model.objects.get(id=stock_id)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        stock_id = self.kwargs.get('pk', 0)
-        stock = self.model.objects.get(id=stock_id)
-        producto = self.second_model.objects.get(id=stock.producto.id)
+        self.create_fields(**self.kwargs)
 
-        # (SAVE-LINE) Las plantillas no renderizan los campos FloatField
-        producto.strprecio = str(producto.precio)
         context['accion'] = 'Editar'
         context['message'] = 'Edite su Producto'
-        context['producto'] = producto
-        context['stock'] = stock
+        context['stock'] = self.stock
 
         return context
 
-    def post(self, request, *args, **kwargs):
-        # SAVE-LINE
-        self.object = self.get_object
+    def post(self, request: WSGIRequest, *args, **kwargs):
+        self.create_fields(**kwargs)
 
-        stock_id = kwargs['pk']
-        stock = self.model.objects.get(id=stock_id)
-        producto = self.second_model.objects.get(id=stock.producto.id)
-
-        form_stock = self.form_class(request.POST, instance=stock)
-        form_producto = self.second_form_class(request.POST, instance=producto)
+        form_stock = self.form_class(request.POST, instance=self.stock)
+        form_producto = self.second_form_class(request.POST, instance=self.stock.producto)
 
         if form_stock.is_valid() and form_producto.is_valid():
-            form_stock.save()
             form_producto.save()
+            form_stock.save()
             return redirect(self.get_success_url())
         self.render_to_response(self.get_context_data(form_producto=form_producto, form_stock=form_stock))
 

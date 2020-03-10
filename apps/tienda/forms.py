@@ -1,4 +1,5 @@
 from django import forms
+
 from .models import Producto, Stock, Tienda
 
 
@@ -20,6 +21,12 @@ class ProductoForm(forms.ModelForm):
             'descripcion',
             'imagen',
         ]
+        # widgets = {
+        #     'nombre': forms.TextInput(attrs={'class': 'form-control'}),
+        #     'precio': forms.NumberInput(attrs={'step': '0.05'}),
+        #     'descripcion': forms.Textarea(attrs={'class': 'form-control'}),
+        #     'imagen': forms.ImageField(allow_empty_file=True),
+        # }
 
 
 class StockForm(forms.ModelForm):
@@ -28,3 +35,6 @@ class StockForm(forms.ModelForm):
         fields = [
             'cantidad',
         ]
+        # widgets = {
+        #     'cantidad': forms.NumberInput()
+        # }
