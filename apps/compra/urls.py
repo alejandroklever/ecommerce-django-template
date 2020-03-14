@@ -1,11 +1,15 @@
 from django.urls import path
 
-from .views import index, ListarTiendasVista, VisitarTiendaVista
+from .views import DetalleProductosVista, ListarPedidosVista
 
 app_name = 'compra'
 
+
+def foo():
+    pass
+
+
 urlpatterns = [
-    path('<int:pk>', index, name='comprar'),
-    path('tiendas/listar/', ListarTiendasVista.as_view(), name='listar-tiendas'),
-    path('tienda/<int:pk>/productos/', VisitarTiendaVista.as_view(), name='visitar-tienda')
+    path('carrito/', ListarPedidosVista.as_view(), name='listar-carrito'),
+    path('tienda/<int:tienda_id>/detalles/<int:pk>', DetalleProductosVista.as_view(), name='detalles-producto'),
 ]

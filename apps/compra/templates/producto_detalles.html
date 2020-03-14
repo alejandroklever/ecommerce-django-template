@@ -1,0 +1,21 @@
+{% extends 'index.html' %}
+
+
+{% block title %} {{ stock.producto }} {% endblock %}
+
+
+{% block Content %}
+    <h1>Nombre : {{ stock.producto.nombre }}</h1>
+    <p>Descripcion : {{ stock.producto.descripcion }}</p>
+    <p>Precio : {{ stock.producto.precio }}</p>
+    <p>Cantidad : {{ stock.cantidad }}</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <label for="id_name"></label>
+        <input type="number" name="cantidad" id="id_name" value="1" step="1">
+
+        <button type="submit" name="action" value="pagar">Pagar</button>
+        <button type="submit" name="action" value="carrito">Carrito</button>
+    </form>
+{% endblock %}

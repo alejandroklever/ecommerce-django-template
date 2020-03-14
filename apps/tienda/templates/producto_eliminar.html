@@ -2,8 +2,10 @@
 
 {% block title %} Mi Tienda {% endblock %}
 
+{% block intro %}{% endblock %}
+
 {% block Content %}
-<form action="" method="post" style="padding-left: 2rem">
+<form action="" method="post" style="padding-left: 10%; padding-top: 7rem">
     {% csrf_token %}
     <h3>Seguro que desea eliminar <i><b>{{ producto.nombre }}</b></i> de su tienda?</h3>
 

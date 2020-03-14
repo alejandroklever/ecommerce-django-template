@@ -8,6 +8,36 @@ from .forms import ActualizarTiendaForm, ProductoForm, StockForm
 from .models import Tienda, Producto, Stock
 
 
+class ListarTiendasVista(ListView):
+    """
+    Lista de todas las tiendas existentes excepto la del propio usuario
+    """
+    model = Tienda
+    template_name = 'tiendas_listar.html'
+    context_object_name = 'tiendas'
+
+    def get_queryset(self):
+        return Tienda.objects.exclude(usuario_id=self.request.user.id)
+
+
+class VisitarTiendaVista(ListView):
+    """
+    Muestra los productos de la tienda especificada por el parametro pk
+    """
+    model = Tienda
+    template_name = 'tienda_visitar.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        tienda_id = self.kwargs.get('tienda_id', 0)
+
+        context['tienda'] = Tienda.objects.get(id=tienda_id)
+        context['stock_list'] = Stock.objects.filter(tienda_id=tienda_id)
+
+        return context
+
+
 # noinspection PyAttributeOutsideInit
 class MostrarTienda(ListView):
     template_name = 'tienda_usuario_mostrar.html'

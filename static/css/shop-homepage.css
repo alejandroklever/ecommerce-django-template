@@ -1,0 +1,35 @@
+/*
+ * Start Bootstrap - Shop Homepage (https://startbootstrap.com/template-overviews/shop-homepage)
+ * Copyright 2013-2019 Start Bootstrap
+ * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap-shop-homepage/blob/master/LICENSE)
+ */
+body {
+  padding-top: 56px;
+}
+
+.outlineone {
+  outline: none;
+  background-color: #dfe;
+  border: 0;
+  border-radius: 5px;
+}
+
+.table_ykmd{
+  padding-bottom: 3rem;
+  padding-top: 3rem;
+  padding-left: 5rem;
+  padding-right: 5rem;
+  margin-top: 5px;
+
+}
+
+.table_ykmd > td,
+.table_ykmd > th{
+    border: #506f74;
+}
+
+.header-font-lp{
+  font-size: 30px;
+  font-style: normal;
+
+}

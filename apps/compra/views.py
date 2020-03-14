@@ -1,57 +1,68 @@
-from django.shortcuts import render
-from django.views.generic import ListView, FormView, DetailView
+from django.core.handlers.wsgi import WSGIRequest
+from django.shortcuts import redirect
+from django.urls import reverse_lazy
+from django.views.generic import ListView, FormView
 
-from apps.tienda.models import Tienda, Stock
-from .models import Carrito, Pedido
+from apps.compra.forms import PedidoForm
+from apps.compra.models import Pedido, Compra
+from apps.tienda.forms import StockForm
+from apps.tienda.models import Stock, Tienda
+
+import datetime
 
 
-def index(request, pk: int):
-    return render(request, 'compra_index.html')
+class PagarPedidoVista(FormView):
+    pass
 
 
-class ListarTiendasVista(ListView):
+# noinspection PyAttributeOutsideInit
+class DetalleProductosVista(FormView):
     """
-    Lista de todas las tiendas existentes excepto la del propio usuario
+    Clase encargada de mostrar la informacion de un producto de una tienda
+    Y mostrar las acciones de comprar o agregar productos al carrito
     """
-    model = Tienda
-    template_name = 'tiendas_listar.html'
-    context_object_name = 'tiendas'
-
-    def get_queryset(self):
-        return Tienda.objects.exclude(usuario_id=self.request.user.id)
-
-
-class VisitarTiendaVista(ListView):
-    """
-    Muestra los productos de la tienda especificada por el parametro pk
-    """
-    model = Tienda
-    template_name = 'tienda_visitar.html'
+    model = Pedido
+    template_name = 'producto_detalles.html'
+    form_class = PedidoForm
+    success_url = reverse_lazy('tienda:listar-tiendas')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        tienda_id = self.kwargs.get('pk', 0)
+        self.stock = Stock.objects.get(id=self.kwargs['pk'])
+        self.tienda = Tienda.objects.get(id=self.kwargs['tienda_id'])
 
-        context['tienda'] = Tienda.objects.get(id=tienda_id)
-        context['stock_list'] = Stock.objects.filter(tienda_id=tienda_id)
-
+        context['stock'] = self.stock
+        context['tienda'] = self.tienda
         return context
 
+    def post(self, request: WSGIRequest, *args, **kwargs):
+        if request.POST['action'] == 'pagar':
+            self.__handle_pay_action(request, **kwargs)
+        elif request.POST['action'] == 'carrito':
+            self.__handle_add_cart_action(request, *args, **kwargs)
+        else:
+            raise Exception("Invalid POST action")
 
-class PagarProductoVista(FormView):
-    pass
+        return redirect(self.get_success_url())
 
+    def __handle_pay_action(self, request, **kwargs):
+        context = self.get_context_data(**kwargs)
 
-class DetalleProductoVista(DetailView):
-    """
-    Clase encargada de mostrar la informacion de un producto de una tienda
-    """
-    pass
+        time = datetime.datetime.now()
+        comprador = self.request.user
+        tienda = context['tienda']
+        stock = context['stock']
+        cantidad = request.POST['cantidad']
 
+        Compra(fecha_hora=time, tienda=tienda, comprador=comprador, producto=stock.producto, cantidad=cantidad).save()
 
-class ComprarProductoVista(FormView):
-    pass
+        form = StockForm({'cantidad': stock.cantidad - int(cantidad)}, instance=stock)
+        if form.is_valid():
+            form.save()
+
+    def __handle_add_cart_action(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
 
 
 class PagarPedidosDelCarritoVista(FormView):
