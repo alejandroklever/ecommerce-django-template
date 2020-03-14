@@ -5,6 +5,7 @@ from django.http import Http404
 from django.shortcuts import redirect
 from django.views.generic import ListView, FormView
 
+from apps.compra.forms import PedidoForm
 from apps.compra.models import Pedido, Compra, Carrito
 from apps.tienda.forms import StockForm
 from apps.tienda.models import Stock, Tienda
@@ -22,6 +23,7 @@ class DetalleProductosVista(FormView):
     """
     model = Pedido
     template_name = 'producto_detalles.html'
+    form_class = PedidoForm
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -41,7 +43,7 @@ class DetalleProductosVista(FormView):
         elif request.POST['action'] == 'carrito':
             return self.__handle_add_cart_action(request, context)
         else:
-            return Http404()
+            raise Http404()
 
     def __handle_pay_action(self, request, context):
         time = datetime.datetime.now()
@@ -69,16 +71,17 @@ class DetalleProductosVista(FormView):
     def __handle_add_cart_action(self, request, context):
         user = self.request.user
         stock = context['stock']
-        cantidad = request.POST['cantidad']
+        tienda = Tienda.objects.get(stock=stock)
+        cantidad = int(request.POST['cantidad'])
 
-        try:
-            carrito = Carrito.objects.get(usuario_id=user.id)
-        except Carrito.DoesNotExist:
-            carrito = Carrito(usuario=user)
-            carrito.save()
+        carrito, _ = Carrito.objects.get_or_create(usuario_id=user.id)
 
-        pedido = Pedido(stock=stock, cantidad=cantidad)
-        pedido.save()
+        pedido, _ = Pedido.objects.get_or_create(defaults={'cantidad': 0, 'tienda': tienda}, stock_id=stock.id,
+                                                 usuario_id=user.id)
+        form = self.form_class({'cantidad': pedido.cantidad + cantidad}, instance=pedido)
+
+        if form.is_valid():
+            form.save()
 
         carrito.pedidos.add(pedido)
         return redirect('compra:listar-carrito')
