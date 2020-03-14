@@ -35,6 +35,3 @@ class StockForm(forms.ModelForm):
         fields = [
             'cantidad',
         ]
-        # widgets = {
-        #     'cantidad': forms.NumberInput()
-        # }

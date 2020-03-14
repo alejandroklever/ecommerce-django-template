@@ -3,6 +3,7 @@
 .vscode/
 .idea
 __pycache__
+media
 
 # Archivos
 lapeseta.sqlite3

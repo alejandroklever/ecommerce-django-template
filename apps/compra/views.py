@@ -1,14 +1,13 @@
+import datetime
+
 from django.core.handlers.wsgi import WSGIRequest
+from django.http import Http404
 from django.shortcuts import redirect
-from django.urls import reverse_lazy
 from django.views.generic import ListView, FormView
 
-from apps.compra.forms import PedidoForm
-from apps.compra.models import Pedido, Compra
+from apps.compra.models import Pedido, Compra, Carrito
 from apps.tienda.forms import StockForm
 from apps.tienda.models import Stock, Tienda
-
-import datetime
 
 
 class PagarPedidoVista(FormView):
@@ -23,8 +22,6 @@ class DetalleProductosVista(FormView):
     """
     model = Pedido
     template_name = 'producto_detalles.html'
-    form_class = PedidoForm
-    success_url = reverse_lazy('tienda:listar-tiendas')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -37,39 +34,57 @@ class DetalleProductosVista(FormView):
         return context
 
     def post(self, request: WSGIRequest, *args, **kwargs):
-        if request.POST['action'] == 'pagar':
-            self.__handle_pay_action(request, **kwargs)
-        elif request.POST['action'] == 'carrito':
-            self.__handle_add_cart_action(request, *args, **kwargs)
-        else:
-            raise Exception("Invalid POST action")
-
-        return redirect(self.get_success_url())
-
-    def __handle_pay_action(self, request, **kwargs):
         context = self.get_context_data(**kwargs)
 
+        if request.POST['action'] == 'pagar':
+            return self.__handle_pay_action(request, context)
+        elif request.POST['action'] == 'carrito':
+            return self.__handle_add_cart_action(request, context)
+        else:
+            return Http404()
+
+    def __handle_pay_action(self, request, context):
         time = datetime.datetime.now()
         comprador = self.request.user
         tienda = context['tienda']
         stock = context['stock']
         cantidad = request.POST['cantidad']
 
-        Compra(fecha_hora=time, tienda=tienda, comprador=comprador, producto=stock.producto, cantidad=cantidad).save()
+        if stock.cantidad - int(cantidad) < 0:
+            # Save code here...
+            pass
+
+        Compra(fecha_hora=time,
+               tienda=tienda,
+               comprador=comprador,
+               producto=stock.producto,
+               cantidad=cantidad).save()
 
         form = StockForm({'cantidad': stock.cantidad - int(cantidad)}, instance=stock)
         if form.is_valid():
             form.save()
 
-    def __handle_add_cart_action(self, request, *args, **kwargs):
-        context = self.get_context_data(**kwargs)
+        return redirect('tienda:listar-tiendas')
+
+    def __handle_add_cart_action(self, request, context):
+        user = self.request.user
+        stock = context['stock']
+        cantidad = request.POST['cantidad']
+
+        try:
+            carrito = Carrito.objects.get(usuario_id=user.id)
+        except Carrito.DoesNotExist:
+            carrito = Carrito(usuario=user)
+            carrito.save()
+
+        pedido = Pedido(stock=stock, cantidad=cantidad)
+        pedido.save()
+
+        carrito.pedidos.add(pedido)
+        return redirect('compra:listar-carrito')
 
 
 class PagarPedidosDelCarritoVista(FormView):
-    pass
-
-
-class AgregarProductosAlCarritoVista(FormView):
     pass
 
 

@@ -15,7 +15,7 @@ class Compra(models.Model):
         unique_together = ['comprador', 'tienda', 'fecha_hora']
 
     def __str__(self):
-        return f'{self.comprador} ha comprado {self.producto} en {self.tienda}'
+        return f'{self.comprador, self.producto, self.tienda}'
 
 
 class Carrito(models.Model):
