@@ -24,5 +24,9 @@ class Carrito(models.Model):
 
 
 class Pedido(models.Model):
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     stock = models.ForeignKey(Stock, on_delete=models.CASCADE)
     cantidad = models.IntegerField()
+
+    class Meta:
+        unique_together = ['usuario', 'stock']
