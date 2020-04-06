@@ -1,5 +1,6 @@
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
+
 from apps.tienda.models import Tienda, Producto
 
 
@@ -12,9 +13,6 @@ class SubastaEnCurso(models.Model):
     hora_inicio = models.DateTimeField()
     hora_final = models.DateTimeField()
 
-    def __str__(self):
-        pass
-
 
 class SubastaFinalizada(models.Model):
     producto = models.CharField(max_length=80)
@@ -22,6 +20,3 @@ class SubastaFinalizada(models.Model):
     tienda = models.ForeignKey(Tienda, on_delete=models.CASCADE)
     precio_final = models.FloatField(null=True)
     hora_final = models.DateTimeField()
-
-    def __str__(self):
-        pass

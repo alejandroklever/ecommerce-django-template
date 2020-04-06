@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Crear Subasta</title>
+</head>
+<body>
+<header>
+    <h4>{{ message }}</h4>
+</header>
+<form action="" method="post">
+    {% csrf_token %}
+    <li><label>Producto:</label></li>
+    <input id="id_nombre" type="text" value="{{ nombre }}" name="nombre">
+    <li><label>Descripcion:</label></li>
+    <input id="id_descripcion" type="text" value="{{ descripcion }}" name="descripcion">
+    <li><label>Imagen:</label></li>
+    <input id="id_img" type="file" value="{{ img }}" name="img">
+    <li><label>Precio:</label></li>
+    <input id="id_precio" type="number" value="{{ precio }}" name="precio">
+    <li><label>Hora Final:</label></li>
+    <input id="id_hora" type="date" value="{{ hora_fecha }}" name="hora_fecha">
+    <input id="id_hora_t" type="time" value="{{ hora_reloj }}" name="hora_reloj">
+    <li><input type="submit" value="Crear"></li>
+</form>
+    <form action={% url 'subasta:inicio-subasta' %} method="get">
+        <input type="submit" value="Atras">
+    </form>
+</body>
+</html>

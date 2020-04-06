@@ -3,6 +3,7 @@ import datetime
 from django.core.handlers.wsgi import WSGIRequest
 from django.http import Http404
 from django.shortcuts import redirect
+from django.urls import reverse_lazy
 from django.views.generic import ListView, FormView
 
 from apps.compra.forms import PedidoForm
@@ -11,7 +12,7 @@ from apps.tienda.forms import StockForm
 from apps.tienda.models import Stock, Tienda
 
 
-class PagarPedidoVista(FormView):
+class PagarPedidosVista(FormView):
     pass
 
 
@@ -53,7 +54,7 @@ class DetalleProductosVista(FormView):
         cantidad = request.POST['cantidad']
 
         if stock.cantidad - int(cantidad) < 0:
-            # Save code here...
+            # TODO: check for count of items in stock
             pass
 
         Compra(fecha_hora=time,
@@ -76,9 +77,12 @@ class DetalleProductosVista(FormView):
 
         carrito, _ = Carrito.objects.get_or_create(usuario_id=user.id)
 
-        pedido, _ = Pedido.objects.get_or_create(defaults={'cantidad': 0, 'tienda': tienda}, stock_id=stock.id,
-                                                 usuario_id=user.id)
-        form = self.form_class({'cantidad': pedido.cantidad + cantidad}, instance=pedido)
+        pedido, _ = Pedido.objects.get_or_create(defaults={'cantidad': 0,
+                                                           'tienda': tienda},
+                                                 stock_id=stock.id, usuario_id=user.id)
+
+        form = self.form_class({'cantidad': pedido.cantidad + cantidad,
+                                'seleccionado': False}, instance=pedido)
 
         if form.is_valid():
             form.save()
@@ -88,12 +92,51 @@ class DetalleProductosVista(FormView):
 
 
 class PagarPedidosDelCarritoVista(FormView):
-    pass
+    model = Pedido
+    template_name = 'listar-carrito.html'
 
 
-class ListarPedidosVista(ListView):
+class ListarPedidosVista(FormView):
     template_name = 'listar-carrito.html'
     context_object_name = 'productos'
+    form_class = PedidoForm
+    success_url = reverse_lazy('index')
 
-    def get_queryset(self):
-        return Pedido.objects.filter(carrito__usuario=self.request.user)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['productos'] = Pedido.objects.filter(carrito__usuario=self.request.user)
+        return context
+
+    def post(self, request, *args, **kwargs):
+        post = [int(p.replace('pedido', '')) for p in request.POST if p.startswith('pedido')]
+        pedidos = [Pedido.objects.get(id=x) for x in post]
+        for pedido in pedidos:
+            self.__pay(pedido)
+            self.__del(pedido)
+        return redirect(self.get_success_url())
+
+    @staticmethod
+    def __pay(pedido):
+        fecha = datetime.datetime.now()
+        comprador = pedido.usuario
+        tienda = pedido.tienda
+        stock = pedido.stock
+        cantidad = pedido.cantidad
+
+        if stock.cantidad - int(cantidad) < 0:
+            # TODO: check for count of items in stock
+            pass
+
+        Compra(fecha_hora=fecha,
+               tienda=tienda,
+               comprador=comprador,
+               producto=stock.producto,
+               cantidad=cantidad).save()
+
+        form = StockForm({'cantidad': stock.cantidad - cantidad}, instance=stock)
+        if form.is_valid():
+            form.save()
+
+    @staticmethod
+    def __del(pedido):
+        pass

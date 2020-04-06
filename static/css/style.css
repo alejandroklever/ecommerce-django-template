@@ -1566,7 +1566,7 @@ h6 {
     margin-bottom: 25px;
   }
 }
-
+/*
 input{
   width: 50%;
   border-bottom-left-radius: 6px;
@@ -1579,7 +1579,7 @@ input{
   padding-top: .5rem;
   padding-bottom: .5rem;
 }
-
+*/
 
 .footer_mio{
   padding-top: 20px;
@@ -1590,7 +1590,26 @@ input{
   height: 100px;
 }
 
-.input-lp{
-  border: 1px;
-  border-color: #506f74;
+
+.inputlp{
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 5px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 10px;
+  padding-left: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-right: 10px;
+  width: 100%;
+}
+
+.inputlp2{
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 5px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 10px;
+  padding-left: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-right: 10px;
 }

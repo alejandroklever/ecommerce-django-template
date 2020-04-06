@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import SubastaEnCurso, SubastaFinalizada
+from apps.subasta.models import SubastaEnCurso, SubastaFinalizada
 
 
 # Register your models here.

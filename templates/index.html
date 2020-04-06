@@ -4,547 +4,273 @@
 
 <html lang="en">
 
-<head>
+    <head>
+        <meta charset="utf-8">
+        <title>
+            {% block Title %}
+                La Peseta
+            {% endblock Title %}
+        </title>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta content="" name="keywords">
+        <meta content="" name="description">
 
-  <meta charset="utf-8">
-  <title>{% block Title %}La Peseta{% endblock Title %}</title>
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <meta content="" name="keywords">
-  <meta content="" name="description">
+        <!-- Favicons -->
+        <link href="{% static 'img/favicon.png' %}" rel="icon">
+        <link href="{% static 'img/apple-touch-icon.png' %}" rel="apple-touch-icon">
 
-  <!-- Favicons -->
-  <link href="{% static 'img/favicon.png' %}" rel="icon">
-  <link href="{% static 'img/apple-touch-icon.png' %}" rel="apple-touch-icon">
+        <!-- Bootstrap CSS File -->
+        <link href="{% static 'lib/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
 
-  <!-- Bootstrap CSS File -->
-  <link href="{% static 'lib/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+        <!-- Libraries CSS Files -->
+        <link href="{% static 'lib/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
+        <link href="{% static 'lib/animate/animate.min.css' %}" rel="stylesheet">
+        <link href="{% static 'lib/ionicons/css/ionicons.min.css' %}" rel="stylesheet">
+        <link href="{% static 'lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+        <link href="{% static 'lib/lightbox/css/lightbox.min.css' %}" rel="stylesheet">
+        <link href="{% static 'css/shop-homepage.css' %}" rel="stylesheet">
 
-  <!-- Libraries CSS Files -->
-  <link href="{% static 'lib/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
-  <link href="{% static 'lib/animate/animate.min.css' %}" rel="stylesheet">
-  <link href="{% static 'lib/ionicons/css/ionicons.min.css' %}" rel="stylesheet">
-  <link href="{% static 'lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
-  <link href="{% static 'lib/lightbox/css/lightbox.min.css' %}" rel="stylesheet">
-  <link href="{% static 'css/shop-homepage.css' %}" rel="stylesheet">
+        <!-- Main Stylesheet File -->
+        <link href="{% static 'css/style.css' %}" rel="stylesheet">
+        {% block css_files %}{% endblock css_files %}
+        <!-- =======================================================
+        Theme Name: Rapid
+        Theme URL: https://bootstrapmade.com/rapid-multipurpose-bootstrap-business-template/
+        Author: BootstrapMade.com
+        License: https://bootstrapmade.com/license/
+        ======================================================= -->
+    </head>
 
-  <!-- Main Stylesheet File -->
-  <link href="{% static 'css/style.css' %}" rel="stylesheet">
-  {% block css_files %}{% endblock css_files %}
-  <!-- =======================================================
-    Theme Name: Rapid
-    Theme URL: https://bootstrapmade.com/rapid-multipurpose-bootstrap-business-template/
-    Author: BootstrapMade.com
-    License: https://bootstrapmade.com/license/
-  ======================================================= -->
-</head>
+    <body {% block body_class %}{% endblock body_class %}>
+        {% block body %}
+            {% block body_content %}
+                {% block header %}
+                    <header id="header" style="background-color: rgba(191,221,233,0.76)">
 
-<body {% block body_class %}{% endblock body_class %}>
-{% block body %}
-  {% block body_content %}
-    <!--==========================
-    Header
-    ============================-->
-    {% block header %}
-      <header id="header" style="background-color: rgba(191,221,233,0.76)">
 
-        <div id="topbar">
-          <div class="container">
-            <div class="social-links">
-              <a href="#" class="twitter"><i class="fa fa-twitter"></i></a>
-              <a href="#" class="facebook"><i class="fa fa-facebook"></i></a>
-              <a href="#" class="linkedin"><i class="fa fa-linkedin"></i></a>
-              <a href="#" class="instagram"><i class="fa fa-instagram"></i></a>
-            </div>
-          </div>
-        </div>
-        <div class="container">
+                        <div class="container">
+                            <div class="logo float-left">
+                                <h1 class="text-light">
+                                    <a href="{% url 'index' %}" class="scrollto">
+                                        <span>
+                                            <strong>
+                                                La Peseta
+                                            </strong>
+                                        </span>
+                                    </a>
+                                </h1>
+                            </div>
 
-          <div class="logo float-left">
-            <!-- Uncomment below if you prefer to use an image logo -->
-            <h1 class="text-light"><a href="#intro" class="scrollto"><span><strong>La Peseta</strong></span></a></h1>
-            <!-- <a href="#header" class="scrollto"><img src="img/logo.png" alt="" class="img-fluid"></a> -->
-          </div>
+                            <nav class="main-nav float-right d-none d-lg-block">
+                                <ul>
+                                    <li class="active"><a href="{% url 'index' %}">Inicio</a></li>
+                                    {% block other_options %}
+                                        <li>
+                                            <a href="{% url 'tienda:mostrar-tienda' %}">
+                                                Mi Tienda
+                                            </a>
+                                        </li>
+                                        {% if tienda_id %}
+                                            <li>
+                                                <a href="{% url 'tienda:editar-tienda' tienda_id %}">
+                                                    Editar
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                        <li>
+                                            <a>
+                                                Productos
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'tienda:listar-tiendas' %}">
+                                                Tiendas
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'compra:listar-carrito' %}">
+                                                Carrito
+                                            </a>
+                                        </li>
 
-          <nav class="main-nav float-right d-none d-lg-block">
-            <ul>
-              <li class="active"><a href={% url 'index' %}>Inicio</a></li>
-            {% block other_options %}
-              <li><a href="{% url 'tienda:mostrar-tienda' %}">Mi Tienda</a></li>
-              {% if tienda_id %}
-                <li><a href="{% url 'tienda:editar-tienda' tienda_id %}">Editar</a></li>
-              {% endif %}
-              <li><a>Objetos mas vendidos</a></li>
-              <li><a href="{% url 'tienda:listar-tiendas' %}">Ver Tiendas</a></li>
-              <li><a>Carrito</a></li>
+                                        {% if user.username == '' %}
+                                            <li>
+                                                <a href="{% url 'usuario:login' %}">
+                                                    Login
+                                                </a>
+                                            </li>
+                                        {% else %}
+                                            <li>
+                                                <a href="{% url 'usuario:logout' %}">
+                                                    Logout
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                    {% endblock %}
+                                </ul>
+                            </nav>
+                        </div>
+                    </header>
+                {% endblock header %}
+                <!--==========================
+                Intro Section
+                ============================-->
+                {% block intro %}
+                    <section id="intro" style="padding-top: 200px" class="clearfix">
+                        <div class="container d-flex h-100">
+                            <div class="row justify-content-center align-self-center">
+                                <div class="col-md-6 intro-info order-md-first order-last">
+                                    {% if user.username == '' %}
+                                        <h2>
+                                            La Peseta<br>Obten tu propia <span>Tienda</span>
+                                        </h2>
+                                    {% else %}
+                                        <h2>
+                                            <span>Bienvenid@ {{ user }}!</span><br>Gracias por elegirnos :)
+                                        </h2>
+                                    {% endif %}
+                                    <div>
+                                        <a href="#about" class="btn-get-started scrollto">
+                                            Informacion
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 intro-img order-md-last order-first">
+                                    <img src="{% static 'img/intro-img.svg' %}" alt="" class="img-fluid">
+                                </div>
+                            </div>
+                        </div>
+                    </section><!-- #intro -->
+                {% endblock intro %}
 
-              {% csrf_token %}
-                {% if user.username == '' %}
-                  <li><a href="{% url 'usuario:login' %}">Login</a></li>
-              {% else %}
-                  <li><a href="{% url 'usuario:logout' %}">Logout</a></li>
-              {% endif %}
-            {% endblock %}
-            </ul>
-          </nav><!-- .main-nav -->
-        </div>
-      </header><!-- #header -->
-    {% endblock header %}
-    <!--==========================
-      Intro Section
-    ============================-->
-    {% block intro %}
-      <section id="intro" style="padding-top: 200px" class="clearfix">
-        <div class="container d-flex h-100">
-          <div class="row justify-content-center align-self-center">
-            <div class="col-md-6 intro-info order-md-first order-last">
-                {% if user.username == '' %}
-              <h2>La Peseta<br>Obten tu propia <span>Tienda</span></h2>
-                {% else %}
-              <h2><span>Bienvenid@ {{ user }}!</span><br>Gracias por elegirnos :)</h2>
-                {% endif %}
-              <div>
-                <a href="#about" class="btn-get-started scrollto">Informacion</a>
-              </div>
-            </div>
+                <main id="main">
+                    {% block Content %}
+                        <!--==========================
+                        Team Section
+                        ============================-->
+                        <section id="team" class="section-bg">
+                            <div class="container">
+                                <div class="section-header">
+                                    <h3>Team</h3>
+                                    <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque</p>
+                                </div>
 
-            <div class="col-md-6 intro-img order-md-last order-first">
-              <img src="{% static 'img/intro-img.svg' %}" alt="" class="img-fluid">
-            </div>
-          </div>
+                                <div class="row">
 
-        </div>
-      </section><!-- #intro -->
-    {% endblock intro %}
+                                    <div class="col-lg-3 col-md-6 wow fadeInUp">
+                                        <div class="member">
+                                            <img src="{% static 'img/team-1.jpg' %}" class="img-fluid" alt="">
+                                            <div class="member-info">
+                                                <div class="member-info-content">
+                                                    <h4>Walter White</h4>
+                                                    <span>Chief Executive Officer</span>
+                                                    <div class="social">
+                                                        <a href=""><i class="fa fa-twitter"></i></a>
+                                                        <a href=""><i class="fa fa-facebook"></i></a>
+                                                        <a href=""><i class="fa fa-google-plus"></i></a>
+                                                        <a href=""><i class="fa fa-linkedin"></i></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
 
-    <main id="main">
-    {% block Content %}
-      <!--==========================
-        Services Section
-      ============================-->
-      <section id="services" class="section-bg">
-        <div class="container">
+                                    <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                                        <div class="member">
+                                            <img src="{% static 'img/team-2.jpg' %}" class="img-fluid" alt="">
+                                            <div class="member-info">
+                                                <div class="member-info-content">
+                                                    <h4>Sarah Jhonson</h4>
+                                                    <span>Product Manager</span>
+                                                    <div class="social">
+                                                        <a href=""><i class="fa fa-twitter"></i></a>
+                                                        <a href=""><i class="fa fa-facebook"></i></a>
+                                                        <a href=""><i class="fa fa-google-plus"></i></a>
+                                                        <a href=""><i class="fa fa-linkedin"></i></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
 
-          <header class="section-header">
-            <h3>Services</h3>
-            <p>Laudem latine persequeris id sed, ex fabulas delectus quo. No vel partiendo abhorreant vituperatoribus.</p>
-          </header>
+                                    <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.2s">
+                                        <div class="member">
+                                            <img src="{% static 'img/team-3.jpg' %}" class="img-fluid" alt="">
+                                            <div class="member-info">
+                                                <div class="member-info-content">
+                                                    <h4>William Anderson</h4>
+                                                    <span>CTO</span>
+                                                    <div class="social">
+                                                        <a href=""><i class="fa fa-twitter"></i></a>
+                                                        <a href=""><i class="fa fa-facebook"></i></a>
+                                                        <a href=""><i class="fa fa-google-plus"></i></a>
+                                                        <a href=""><i class="fa fa-linkedin"></i></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
 
-          <div class="row">
+                                    <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+                                        <div class="member">
+                                            <img src="{% static 'img/team-4.jpg' %}" class="img-fluid" alt="">
+                                            <div class="member-info">
+                                                <div class="member-info-content">
+                                                    <h4>Amanda Jepson</h4>
+                                                    <span>Accountant</span>
+                                                    <div class="social">
+                                                        <a href=""><i class="fa fa-twitter"></i></a>
+                                                        <a href=""><i class="fa fa-facebook"></i></a>
+                                                        <a href=""><i class="fa fa-google-plus"></i></a>
+                                                        <a href=""><i class="fa fa-linkedin"></i></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
 
-            <div class="col-md-6 col-lg-4 wow bounceInUp" data-wow-duration="1.4s">
-              <div class="box">
-                <div class="icon" style="background: #fceef3;"><i class="ion-ios-analytics-outline" style="color: #ff689b;"></i></div>
-                <h4 class="title"><a href="">Lorem Ipsum</a></h4>
-                <p class="description">Voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident</p>
-              </div>
-            </div>
-            <div class="col-md-6 col-lg-4 wow bounceInUp" data-wow-duration="1.4s">
-              <div class="box">
-                <div class="icon" style="background: #fff0da;"><i class="ion-ios-bookmarks-outline" style="color: #e98e06;"></i></div>
-                <h4 class="title"><a href="">Dolor Sitema</a></h4>
-                <p class="description">Minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat tarad limino ata</p>
-              </div>
-            </div>
+                                </div>
 
-            <div class="col-md-6 col-lg-4 wow bounceInUp" data-wow-delay="0.1s" data-wow-duration="1.4s">
-              <div class="box">
-                <div class="icon" style="background: #e6fdfc;"><i class="ion-ios-paper-outline" style="color: #3fcdc7;"></i></div>
-                <h4 class="title"><a href="">Sed ut perspiciatis</a></h4>
-                <p class="description">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur</p>
-              </div>
-            </div>
-            <div class="col-md-6 col-lg-4 wow bounceInUp" data-wow-delay="0.1s" data-wow-duration="1.4s">
-              <div class="box">
-                <div class="icon" style="background: #eafde7;"><i class="ion-ios-speedometer-outline" style="color:#41cf2e;"></i></div>
-                <h4 class="title"><a href="">Magni Dolores</a></h4>
-                <p class="description">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</p>
-              </div>
-            </div>
-
-            <div class="col-md-6 col-lg-4 wow bounceInUp" data-wow-delay="0.2s" data-wow-duration="1.4s">
-              <div class="box">
-                <div class="icon" style="background: #e1eeff;"><i class="ion-ios-world-outline" style="color: #2282ff;"></i></div>
-                <h4 class="title"><a href="">Nemo Enim</a></h4>
-                <p class="description">At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque</p>
-              </div>
-            </div>
-            <div class="col-md-6 col-lg-4 wow bounceInUp" data-wow-delay="0.2s" data-wow-duration="1.4s">
-              <div class="box">
-                <div class="icon" style="background: #ecebff;"><i class="ion-ios-clock-outline" style="color: #8660fe;"></i></div>
-                <h4 class="title"><a href="">Eiusmod Tempor</a></h4>
-                <p class="description">Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi</p>
-              </div>
-            </div>
-
-          </div>
-
-        </div>
-      </section><!-- #services -->
-
-      <!--==========================
-        Why Us Section
-      ============================-->
-      <section id="why-us" class="wow fadeIn">
-        <div class="container-fluid">
-
-          <header class="section-header">
-            <h3>Why choose us?</h3>
-            <p>Laudem latine persequeris id sed, ex fabulas delectus quo. No vel partiendo abhorreant vituperatoribus.</p>
-          </header>
-
-          <div class="row">
-
-            <div class="col-lg-6">
-              <div class="why-us-img">
-                <img src="{% static 'img/why-us.jpg' %}" alt="" class="img-fluid">
-              </div>
-            </div>
-
-            <div class="col-lg-6">
-              <div class="why-us-content">
-                <p>Molestiae omnis numquam corrupti omnis itaque. Voluptatum quidem impedit. Odio dolorum exercitationem est error omnis repudiandae ad dolorum sit.</p>
-                <p>
-                  Explicabo repellendus quia labore. Non optio quo ea ut ratione et quaerat. Porro facilis deleniti porro consequatur
-                  et temporibus. Labore est odio.
-
-                  Odio omnis saepe qui. Veniam eaque ipsum. Ea quia voluptatum quis explicabo sed nihil repellat..
-                </p>
-
-                <div class="features wow bounceInUp clearfix">
-                  <i class="fa fa-diamond" style="color: #f058dc;"></i>
-                  <h4>Corporis dolorem</h4>
-                  <p>Commodi quia voluptatum. Est cupiditate voluptas quaerat officiis ex alias dignissimos et ipsum. Soluta at enim modi ut incidunt dolor et.</p>
-                </div>
-
-                <div class="features wow bounceInUp clearfix">
-                  <i class="fa fa-object-group" style="color: #ffb774;"></i>
-                  <h4>Eum ut aspernatur</h4>
-                  <p>Molestias eius rerum iusto voluptas et ab cupiditate aut enim. Assumenda animi occaecati. Quo dolore fuga quasi autem aliquid ipsum odit. Perferendis doloremque iure nulla aut.</p>
-                </div>
-
-                <div class="features wow bounceInUp clearfix">
-                  <i class="fa fa-language" style="color: #589af1;"></i>
-                  <h4>Voluptates dolores</h4>
-                  <p>Voluptates nihil et quis omnis et eaque omnis sint aut. Ducimus dolorum aspernatur. Totam dolores ut enim ullam voluptas distinctio aut.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="container">
-          <div class="row counters">
-
-            <div class="col-lg-3 col-6 text-center">
-              <span data-toggle="counter-up">274</span>
-              <p>Clients</p>
-            </div>
-
-            <div class="col-lg-3 col-6 text-center">
-              <span data-toggle="counter-up">421</span>
-              <p>Projects</p>
-            </div>
-
-            <div class="col-lg-3 col-6 text-center">
-              <span data-toggle="counter-up">1,364</span>
-              <p>Hours Of Support</p>
-            </div>
-
-            <div class="col-lg-3 col-6 text-center">
-              <span data-toggle="counter-up">18</span>
-              <p>Hard Workers</p>
-            </div>
-
-          </div>
-
-        </div>
-      </section>
-
-      <!--==========================
-        Portfolio Section
-      ============================-->
-      <section id="portfolio" class="section-bg">
-        <div class="container">
-
-          <header class="section-header">
-            <h3 class="section-title">Our Portfolio</h3>
-          </header>
-
-          <div class="row">
-            <div class="col-lg-12">
-              <ul id="portfolio-flters">
-                <li data-filter="*" class="filter-active">All</li>
-                <li data-filter=".filter-app">App</li>
-                <li data-filter=".filter-card">Card</li>
-                <li data-filter=".filter-web">Web</li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="row portfolio-container">
-
-            <div class="col-lg-4 col-md-6 portfolio-item filter-app">
-              <div class="portfolio-wrap">
-                <img src="{% static 'img/portfolio/app1.jpg' %}" class="img-fluid" alt="">
-                <div class="portfolio-info">
-                  <h4><a href="#">App 1</a></h4>
-                  <p>App</p>
-                  <div>
-                    <a href="{% static 'img/portfolio/app1.jpg' %}" data-lightbox="portfolio" data-title="App 1" class="link-preview" title="Preview"><i class="ion ion-eye"></i></a>
-                    <a href="#" class="link-details" title="More Details"><i class="ion ion-android-open"></i></a>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6 portfolio-item filter-web" data-wow-delay="0.1s">
-              <div class="portfolio-wrap">
-                <img src="{% static 'img/portfolio/web3.jpg' %}" class="img-fluid" alt="">
-                <div class="portfolio-info">
-                  <h4><a href="#">Web 3</a></h4>
-                  <p>Web</p>
-                  <div>
-                    <a href="{% static 'img/portfolio/web3.jpg' %}" class="link-preview" data-lightbox="portfolio" data-title="Web 3" title="Preview"><i class="ion ion-eye"></i></a>
-                    <a href="#" class="link-details" title="More Details"><i class="ion ion-android-open"></i></a>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6 portfolio-item filter-app" data-wow-delay="0.2s">
-              <div class="portfolio-wrap">
-                <img src="{% static 'img/portfolio/app2.jpg' %}" class="img-fluid" alt="">
-                <div class="portfolio-info">
-                  <h4><a href="#">App 2</a></h4>
-                  <p>App</p>
-                  <div>
-                    <a href="{% static 'img/portfolio/app2.jpg' %}" class="link-preview" data-lightbox="portfolio" data-title="App 2" title="Preview"><i class="ion ion-eye"></i></a>
-                    <a href="#" class="link-details" title="More Details"><i class="ion ion-android-open"></i></a>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6 portfolio-item filter-card">
-              <div class="portfolio-wrap">
-                <img src="{% static 'img/portfolio/card2.jpg' %}" class="img-fluid" alt="">
-                <div class="portfolio-info">
-                  <h4><a href="#">Card 2</a></h4>
-                  <p>Card</p>
-                  <div>
-                    <a href="{% static 'img/portfolio/card2.jpg' %}" class="link-preview" data-lightbox="portfolio" data-title="Card 2" title="Preview"><i class="ion ion-eye"></i></a>
-                    <a href="#" class="link-details" title="More Details"><i class="ion ion-android-open"></i></a>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6 portfolio-item filter-web" data-wow-delay="0.1s">
-              <div class="portfolio-wrap">
-                <img src="{% static 'img/portfolio/web2.jpg' %}" class="img-fluid" alt="">
-                <div class="portfolio-info">
-                  <h4><a href="#">Web 2</a></h4>
-                  <p>Web</p>
-                  <div>
-                    <a href="{% static 'img/portfolio/web2.jpg' %}" class="link-preview" data-lightbox="portfolio" data-title="Web 2" title="Preview"><i class="ion ion-eye"></i></a>
-                    <a href="#" class="link-details" title="More Details"><i class="ion ion-android-open"></i></a>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6 portfolio-item filter-app" data-wow-delay="0.2s">
-              <div class="portfolio-wrap">
-                <img src="{% static 'img/portfolio/app3.jpg' %}" class="img-fluid" alt="">
-                <div class="portfolio-info">
-                  <h4><a href="#">App 3</a></h4>
-                  <p>App</p>
-                  <div>
-                    <a href="{% static 'img/portfolio/app3.jpg' %}" class="link-preview" data-lightbox="portfolio" data-title="App 3" title="Preview"><i class="ion ion-eye"></i></a>
-                    <a href="#" class="link-details" title="More Details"><i class="ion ion-android-open"></i></a>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6 portfolio-item filter-card">
-              <div class="portfolio-wrap">
-                <img src="{% static 'img/portfolio/card1.jpg' %}" class="img-fluid" alt="">
-                <div class="portfolio-info">
-                  <h4><a href="#">Card 1</a></h4>
-                  <p>Card</p>
-                  <div>
-                    <a href="{% static 'img/portfolio/card1.jpg' %}" class="link-preview" data-lightbox="portfolio" data-title="Card 1" title="Preview"><i class="ion ion-eye"></i></a>
-                    <a href="#" class="link-details" title="More Details"><i class="ion ion-android-open"></i></a>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6 portfolio-item filter-card" data-wow-delay="0.1s">
-              <div class="portfolio-wrap">
-                <img src="{% static 'img/portfolio/card3.jpg' %}" class="img-fluid" alt="">
-                <div class="portfolio-info">
-                  <h4><a href="#">Card 3</a></h4>
-                  <p>Card</p>
-                  <div>
-                    <a href="{% static 'img/portfolio/card3.jpg' %}" class="link-preview" data-lightbox="portfolio" data-title="Card 3" title="Preview"><i class="ion ion-eye"></i></a>
-                    <a href="#" class="link-details" title="More Details"><i class="ion ion-android-open"></i></a>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6 portfolio-item filter-web" data-wow-delay="0.2s">
-              <div class="portfolio-wrap">
-                <img src="{% static 'img/portfolio/web1.jpg' %}" class="img-fluid" alt="">
-                <div class="portfolio-info">
-                  <h4><a href="#">Web 1</a></h4>
-                  <p>Web</p>
-                  <div>
-                    <a href="{% static 'img/portfolio/web1.jpg' %}" class="link-preview" data-lightbox="portfolio" data-title="Web 1" title="Preview"><i class="ion ion-eye"></i></a>
-                    <a href="#" class="link-details" title="More Details"><i class="ion ion-android-open"></i></a>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-          </div>
-
-        </div>
-      </section><!-- #portfolio -->
-
-      <!--==========================
-        Team Section
-      ============================-->
-      <section id="team" class="section-bg">
-        <div class="container">
-          <div class="section-header">
-            <h3>Team</h3>
-            <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque</p>
-          </div>
-
-          <div class="row">
-
-            <div class="col-lg-3 col-md-6 wow fadeInUp">
-              <div class="member">
-                <img src="{% static 'img/team-1.jpg' %}" class="img-fluid" alt="">
-                <div class="member-info">
-                  <div class="member-info-content">
-                    <h4>Walter White</h4>
-                    <span>Chief Executive Officer</span>
-                    <div class="social">
-                      <a href=""><i class="fa fa-twitter"></i></a>
-                      <a href=""><i class="fa fa-facebook"></i></a>
-                      <a href=""><i class="fa fa-google-plus"></i></a>
-                      <a href=""><i class="fa fa-linkedin"></i></a>
+                            </div>
+                        </section><!-- #team -->
+                    {% endblock Content %}
+                </main>
+            {% endblock body_content %}
+            <!--==========================
+            Footer
+            ============================-->
+            {% block footer %}
+                <footer class="section-bg footer_mio">
+                    <div class="container">
+                        <div class="copyright">
+                            &copy; Copyright <strong>La Peseta</strong>. All Rights Reserved
+                            <br>
+                            Designed by RegCode
+                        </div>
                     </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+                </footer>
+                <a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
+            {% endblock footer %}
+            <!-- JavaScript Libraries -->
+            <script src="{% static 'lib/jquery/jquery.min.js' %}"></script>
+            <script src="{% static 'lib/jquery/jquery-migrate.min.js' %}"></script>
+            <script src="{% static 'lib/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+            <script src="{% static 'lib/easing/easing.min.js' %}"></script>
+            <script src="{% static 'lib/mobile-nav/mobile-nav.js' %}"></script>
+            <script src="{% static 'lib/wow/wow.min.js' %}"></script>
+            <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
+            <script src="{% static 'lib/counterup/counterup.min.js' %}"></script>
+            <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
+            <script src="{% static 'lib/isotope/isotope.pkgd.min.js' %}"></script>
+            <script src="{% static 'lib/lightbox/js/lightbox.min.js' %}"></script>
 
-            <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-              <div class="member">
-                <img src="{% static 'img/team-2.jpg' %}" class="img-fluid" alt="">
-                <div class="member-info">
-                  <div class="member-info-content">
-                    <h4>Sarah Jhonson</h4>
-                    <span>Product Manager</span>
-                    <div class="social">
-                      <a href=""><i class="fa fa-twitter"></i></a>
-                      <a href=""><i class="fa fa-facebook"></i></a>
-                      <a href=""><i class="fa fa-google-plus"></i></a>
-                      <a href=""><i class="fa fa-linkedin"></i></a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <!-- Contact Form JavaScript File -->
+            <script src="{% static 'contactform/contactform.js' %}"></script>
 
-            <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.2s">
-              <div class="member">
-                <img src="{% static 'img/team-3.jpg' %}" class="img-fluid" alt="">
-                <div class="member-info">
-                  <div class="member-info-content">
-                    <h4>William Anderson</h4>
-                    <span>CTO</span>
-                    <div class="social">
-                      <a href=""><i class="fa fa-twitter"></i></a>
-                      <a href=""><i class="fa fa-facebook"></i></a>
-                      <a href=""><i class="fa fa-google-plus"></i></a>
-                      <a href=""><i class="fa fa-linkedin"></i></a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <!-- Template Main Javascript File -->
+            <script src="{% static 'contactform/contactform.js' %}"></script>
 
-            <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
-              <div class="member">
-                <img src="{% static 'img/team-4.jpg' %}" class="img-fluid" alt="">
-                <div class="member-info">
-                  <div class="member-info-content">
-                    <h4>Amanda Jepson</h4>
-                    <span>Accountant</span>
-                    <div class="social">
-                      <a href=""><i class="fa fa-twitter"></i></a>
-                      <a href=""><i class="fa fa-facebook"></i></a>
-                      <a href=""><i class="fa fa-google-plus"></i></a>
-                      <a href=""><i class="fa fa-linkedin"></i></a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-          </div>
-
-        </div>
-      </section><!-- #team -->
-
-    {% endblock Content %}
-    </main>
-  {% endblock body_content %}
-  <!--==========================
-    Footer
-  ============================-->
-  {% block footer %}
-    <footer class="section-bg footer_mio">
-
-      <div class="container">
-        <div class="copyright">
-          &copy; Copyright <strong>La Peseta</strong>. All Rights Reserved
-        <br>
-          Designed by RegCode
-        </div>
-      </div>
-    </footer><!-- #footer -->
-
-    <a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
-    <!-- Uncomment below i you want to use a preloader -->
-    <!-- <div id="preloader"></div> -->
-  {% endblock footer %}
-  <!-- JavaScript Libraries -->
-  <script src="{% static 'lib/jquery/jquery.min.js' %}"></script>
-  <script src="{% static 'lib/jquery/jquery-migrate.min.js' %}"></script>
-  <script src="{% static 'lib/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-  <script src="{% static 'lib/easing/easing.min.js' %}"></script>
-  <script src="{% static 'lib/mobile-nav/mobile-nav.js' %}"></script>
-  <script src="{% static 'lib/wow/wow.min.js' %}"></script>
-  <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
-  <script src="{% static 'lib/counterup/counterup.min.js' %}"></script>
-  <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
-  <script src="{% static 'lib/isotope/isotope.pkgd.min.js' %}"></script>
-  <script src="{% static 'lib/lightbox/js/lightbox.min.js' %}"></script>
-  <!-- Contact Form JavaScript File -->
-  <script src="{% static 'contactform/contactform.js' %}"></script>
-
-  <!-- Template Main Javascript File -->
-  <script src="{% static 'contactform/contactform.js' %}"></script>
-
-  {% block js_files %}{% endblock js_files %}
-
-{% endblock body %}
-</body>
+            {% block js_files %}{% endblock js_files %}
+        {% endblock body %}
+    </body>
 </html>

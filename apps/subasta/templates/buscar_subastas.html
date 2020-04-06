@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Buscar Subastas</title>
+</head>
+<body>
+<header>
+    <li><label>{{ message }}</label></li>
+</header>
+    <form action={% url 'subasta:buscar-subastas' %} method="get">
+        <input type="text" name="prod_name">
+        <input type="submit" value="Buscar">
+    </form>
+<table>
+<tr>
+    <th>Producto</th>
+    <th>Precio Actual</th>
+    <th>Fecha de Cierre</th>
+    <th>Precio Nuevo</th>
+</tr>
+{% for elem in elems %}
+    <tr>
+    <td>[{{ elem.producto.nombre }}]</td>
+    <td>[{{ elem.precio_actual }}$]</td>
+    <td>[{{ elem.hora_final }}]
+    <td>
+    <form action={% url 'subasta:pujar' elem.producto.nombre elem.precio_actual %} method="post">
+        {% csrf_token %}
+        <input type="number" name="new_price">
+        <input type="submit" value="Pujar">
+    </form>
+    </td>
+    </tr>
+{% endfor %}
+</table>
+    <form action={% url 'subasta:inicio-subasta' %} method="get">
+        <input type="submit" value="Atras">
+    </form>
+</body>
+</html>

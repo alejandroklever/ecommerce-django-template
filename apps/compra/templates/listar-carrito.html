@@ -16,36 +16,49 @@
             </b>
         </strong>
     </h3>
-    <div class="row" style="padding-bottom: 3rem">
-    {% for pedido in productos %}
-        <div class="col-lg-3 col-md-1 mb-3">
-            <div class="card h-100">
-            {% if pedido.stock.producto.imagen %}
-            {# aca va la foto asignada a la tienda #}
-            {# <td style="padding-left: 10px">{{ tienda.imagen }}</td> #}
-            {% else %}
-                <a><img class="card-img-top" src="{% static 'img/900x350.png' %}" alt=""></a>
-            {% endif %}
-                <div class="card-body">
-                    <h4 class="card-title">
-                        <a href={% url 'compra:detalles-producto' pedido.tienda.id pedido.stock.id %}>
-                            {{ pedido.stock.producto.nombre }}
-                        </a>
-                    </h4>
-                </div>
-                <div class="card-body">
-                    <h5 class="card-subtitle">
-                        <a>Cantidad : {{ pedido.cantidad }}</a>
-                    </h5>
-                </div>
 
-                <div class="card-footer">
-                    <small class="text-muted">&#9733; &#9733; &#9733; &#9733; &#9734;</small>
+    <form method="post">
+        {% csrf_token %}
+        <div class="row" style="padding-bottom: 3rem">
+        {% for pedido in productos %}
+            <div class="col-lg-3 col-md-1 mb-3">
+                <div class="card h-100">
+                {% if pedido.stock.producto.imagen %}
+                {# aca va la foto asignada a la tienda #}
+                {# <td style="padding-left: 10px">{{ tienda.imagen }}</td> #}
+                {% else %}
+                    <a><img class="card-img-top" src="{% static 'img/900x350.png' %}" alt=""></a>
+                {% endif %}
+                    <div class="card-body">
+                        <h4 class="card-title">
+                            <a href={% url 'compra:detalles-producto' pedido.tienda.id pedido.stock.id %}>
+                                {{ pedido.stock.producto.nombre }}
+                            </a>
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-subtitle">
+                            <a>Cantidad : {{ pedido.cantidad }}</a>
+                        </h5>
+                    </div>
+                    <div class="card-body checkbox">
+                        <label for="{{ pedido.id }}">
+                            Seleccionar :
+                            <input type="checkbox" id="id_{{ pedido.id }}" name="pedido{{ pedido.id }}"/>
+                        </label>
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-muted">&#9733; &#9733; &#9733; &#9733; &#9734;</small>
+                    </div>
                 </div>
             </div>
+        {% endfor %}
+
         </div>
-    {% endfor %}
-    </div>
+
+        <button class="btn btn-primary" type="submit"> Pagar Productos </button>
+    </form>
+
 </div>
 
 
