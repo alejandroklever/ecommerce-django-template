@@ -193,8 +193,8 @@
   }(), _class.notSupported = true, _temp);
 
   // getComputedStyle shim, from http://stackoverflow.com/a/21797294
-  var getComputedStyle = window.getComputedStyle || function getComputedStyle(el) {
-    var getComputedStyleRX = /(\-([a-z]){1})/g;
+  let getComputedStyle = window.getComputedStyle || function getComputedStyle(el) {
+    let getComputedStyleRX = /(-([a-z]))/g;
     return {
       getPropertyValue: function getPropertyValue(prop) {
         if (prop === 'float') {

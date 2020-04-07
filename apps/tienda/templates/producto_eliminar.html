@@ -1,15 +1,15 @@
-{% extends 'index.html' %}
+{% extends 'index-fixed.html' %}
 
-{% block title %} Mi Tienda {% endblock %}
 
-{% block intro %}{% endblock %}
-
-{% block Content %}
-<form action="" method="post" style="padding-left: 10%; padding-top: 7rem">
-    {% csrf_token %}
-    <h3>Seguro que desea eliminar <i><b>{{ producto.nombre }}</b></i> de su tienda?</h3>
-
-    <button class="btn btn-danger" type="submit">Si, Eliminar</button>
-    <a class="btn btn-secondary" href={% url 'tienda:mostrar-tienda' %}>No</a>
-</form>
+{% block content %}
+<div class="container" style="padding: 50px">
+    <form method="post">
+        {% csrf_token %}
+        <h1 class="text-center">Seguro que desea eliminar <i><b>{{ producto.nombre }}</b></i> de su tienda?</h1>
+        <div class="btn-group-lg text-center">
+            <button class="btn btn-danger" type="submit">Si, Eliminar</button>
+            <a class="btn btn-secondary" href={% url 'tienda:mostrar-tienda' %}>No</a>
+        </div>
+    </form>
+</div>
 {% endblock %}

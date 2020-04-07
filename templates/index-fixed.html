@@ -1,0 +1,33 @@
+{% extends 'index.html' %}
+
+{% block navbar %}
+<nav class="navbar" style="background-color: rgba(191,221,233,0.76)">
+    <div class="container">
+        <div class="logo float-left">
+            <h1 class="text-light">
+                <a href="{% url 'index' %}"><strong>La Peseta</strong></a>
+            </h1>
+        </div>
+
+        <nav class="main-nav float-right d-none d-lg-block">
+            <ul>
+                <li><a href="{% url 'index' %}">Inicio</a></li>
+                <li><a href="{% url 'tienda:mostrar-tienda' %}">Mi Tienda</a></li>
+                {% if tienda_id %}
+                <li><a href="{% url 'tienda:editar-tienda' tienda_id %}">Editar</a></li>
+                {% endif %}
+                <li><a>Productos</a></li>
+                <li><a href="{% url 'tienda:listar-tiendas' %}">Tiendas</a></li>
+                <li><a href="{% url 'compra:listar-carrito' %}">Carrito</a></li>
+                {% if not tienda_id %}
+                <li><a href="{% url 'usuario:login' %}">Login</a></li>
+                {% else %}
+                <li><a href="{% url 'usuario:logout' %}">Logout</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</nav>
+{% endblock %}
+
+{% block intro %} {% endblock %}

@@ -95,7 +95,7 @@ class CrearProducto(FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['accion'] = 'Crear'
-        context['message'] = 'Agregue su producto'
+        context['header'] = 'Agregue su producto'
         if not isinstance(self.request.user, AnonymousUser):
             context['tienda_id'] = self.request.user.tienda.id
         if 'form_stock' not in context:
@@ -137,7 +137,7 @@ class EditarProducto(FormView):
         self.create_fields(**self.kwargs)
 
         context['accion'] = 'Editar'
-        context['message'] = 'Edite su Producto'
+        context['header'] = 'Edite su Producto'
         context['stock'] = self.stock
 
         return context

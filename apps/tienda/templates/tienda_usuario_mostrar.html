@@ -1,24 +1,23 @@
-{% extends 'index.html' %}
+{% extends 'index-fixed.html' %}
 {% load staticfiles %}
 
-{% block intro %} {% endblock %}
 
 {% block content %}
 <div class="container" style="padding: 25px">
     <div class="row">
         <div class="col-lg-3">
             <div class="row">
-                <div class="col-lg-12 animated fadeInDown" style="padding: 5px">
+                <div class="col-lg-12 animated fadeInDown" style="padding: 5px; animation-delay: 0.25s">
                     <h3 class="need-pd header-font-lp"><strong>Administración de <b>{{ nombre_tienda }}</b></strong></h3>
                 </div>
-                <div class="col-lg-12 animated fadeInDown" style="padding: 5px">
+                <div class="col-lg-12 animated fadeInDown" style="padding: 5px; animation-delay: 0.5s">
                     <div class="list-group">
                         {% for categoria in categorias %}
                         <a class="list-group-item"><label><input type="checkbox"></label> {{ categoria }}</a>
                         {% endfor %}
                     </div>
                 </div>
-                <div class="col-lg-12 animated fadeInDown" style="padding: 5px">
+                <div class="col-lg-12 animated fadeInDown" style="padding: 5px; animation-delay: 0.75s">
                     <a class="btn btn-outline-primary" href="{% url 'tienda:crear-producto' %}">Agregar Producto</a>
                 </div>
             </div>
@@ -26,7 +25,7 @@
         <div class="col-lg-9">
             <div class="row">
                 {% for stock in user_stock_list %}
-                <div class="col-lg-4 col-md-6 mb-3 animated fadeInLeft">
+                <div class="col-lg-4 col-md-6 mb-3 animated fadeInLeft" style="animation-delay: 1s">
                     <div class="card h-100">
                         <div class="card-body">
                             <h6><strong>Producto: </strong>{{ stock.producto.nombre }}</h6>
