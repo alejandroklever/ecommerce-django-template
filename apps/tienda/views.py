@@ -1,3 +1,4 @@
+from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.handlers.wsgi import WSGIRequest
 from django.shortcuts import redirect
@@ -5,7 +6,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, UpdateView, DeleteView, FormView
 
 from .forms import ActualizarTiendaForm, ProductoForm, StockForm
-from .models import Tienda, Producto, Stock
+from .models import Tienda, Producto, Stock, Categoria
 
 
 class ListarTiendasVista(ListView):
@@ -15,6 +16,18 @@ class ListarTiendasVista(ListView):
     model = Tienda
     template_name = 'tiendas_listar.html'
     context_object_name = 'tiendas'
+
+    def get_queryset(self):
+        return Tienda.objects.exclude(usuario_id=self.request.user.id)
+
+
+class ListarProductosVista(ListView):
+    """
+    Lista de todos productos existentes
+    """
+    model = Producto
+    template_name = 'tiendas_listar.html'
+    context_object_name = 'productos'
 
     def get_queryset(self):
         return Tienda.objects.exclude(usuario_id=self.request.user.id)
@@ -58,6 +71,7 @@ class MostrarTienda(ListView):
         context = super().get_context_data(**kwargs)
         context['tienda_id'] = self.user.tienda.id
         context['nombre_tienda'] = self.user.tienda
+        context['categorias'] = Categoria.objects.all()
         return context
 
 
@@ -82,6 +96,8 @@ class CrearProducto(FormView):
         context = super().get_context_data(**kwargs)
         context['accion'] = 'Crear'
         context['message'] = 'Agregue su producto'
+        if not isinstance(self.request.user, AnonymousUser):
+            context['tienda_id'] = self.request.user.tienda.id
         if 'form_stock' not in context:
             context['form_stock'] = self.form_class(self.request.GET)
         if 'form_producto' not in context:

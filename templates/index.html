@@ -30,10 +30,8 @@
     {% block css_files %}{% endblock css_files %}
 </head>
 
-<body {% block body_class %}{% endblock body_class %}>
+<body>
     {% block body %}
-    {% block body_content %}
-    {% block header %}
     <nav class="navbar" style="background-color: rgba(191,221,233,0.76)">
         <div class="container">
             <div class="logo float-left">
@@ -52,7 +50,7 @@
                     <li><a>Productos</a></li>
                     <li><a href="{% url 'tienda:listar-tiendas' %}">Tiendas</a></li>
                     <li><a href="{% url 'compra:listar-carrito' %}">Carrito</a></li>
-                    {% if tienda_id %}
+                    {% if not tienda_id %}
                     <li><a href="{% url 'usuario:login' %}">Login</a></li>
                     {% else %}
                     <li><a href="{% url 'usuario:logout' %}">Logout</a></li>
@@ -61,44 +59,33 @@
             </nav>
         </div>
     </nav>
-    {% endblock header %}
 
-    <section id="intro" class="clearfix" style="padding: 200px">
-        {% block intro %}
+    {% block intro %}
+    <section id="intro" class="clearfix" style="padding: 202px">
         <div class="container d-flex h-100">
             <div class="row justify-content-center align-self-center">
                 <div class="col-md-6 intro-info order-md-first order-last">
                     {% if not tienda_id %}
-                    <h2>
-                        La Peseta <br>Obten tu propia <span>Tienda</span>
-                    </h2>
+                    <h2>La Peseta <br>Obten tu propia <span>Tienda</span></h2>
                     {% else %}
-                    <h2>
-                        <span>Bienvenid@ {{ user }}!</span><br>Gracias por elegirnos :)
-                    </h2>
+                    <h2><span>Bienvenid@ {{ user }}!</span><br>Gracias por elegirnos :)</h2>
                     {% endif %}
-                    <div>
-                        <a href="#about" class="btn-get-started scrollto">Informacion</a>
-                    </div>
+                    <div><a href="#" class="btn-get-started scrollto">Informacion</a></div>
                 </div>
                 <div class="col-md-6 intro-img order-md-last order-first">
                     <img src="{% static 'img/intro-img.svg' %}" alt="" class="img-fluid">
                 </div>
             </div>
-
         </div>
-        {% endblock intro %}
     </section>
+    {% endblock intro %}
 
-    <main id="main">
-        {% block Content %}{% endblock Content %}
-    </main>
-    {% endblock body_content %}
+    {% block content %}{% endblock %}
     <!--==========================
     Footer
     ============================-->
     {% block footer %}
-    <footer class="section-bg footer-info">
+    <footer class="section-bg footer-info" style="background-color: rgba(191,221,233,0.35)">
         <div class="container">
             <div class="copyright">
                 &copy; Copyright <strong>La Peseta</strong>. All Rights Reserved<br>Designed by RegCode
@@ -107,26 +94,25 @@
     </footer>
     <a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
     {% endblock footer %}
+
     <!-- JavaScript Libraries -->
-    <script src="{% static 'lib/jquery/jquery.min.js' %}"></script>
-    <script src="{% static 'lib/jquery/jquery-migrate.min.js' %}"></script>
-    <script src="{% static 'lib/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-    <script src="{% static 'lib/easing/easing.min.js' %}"></script>
-    <script src="{% static 'lib/mobile-nav/mobile-nav.js' %}"></script>
-    <script src="{% static 'lib/wow/wow.min.js' %}"></script>
-    <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
-    <script src="{% static 'lib/counterup/counterup.min.js' %}"></script>
-    <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
-    <script src="{% static 'lib/isotope/isotope.pkgd.min.js' %}"></script>
-    <script src="{% static 'lib/lightbox/js/lightbox.min.js' %}"></script>
+{#    <script src="{% static 'lib/jquery/jquery.min.js' %}"></script>#}
+{#    <script src="{% static 'lib/jquery/jquery-migrate.min.js' %}"></script>#}
+{#    <script src="{% static 'lib/bootstrap/js/bootstrap.bundle.min.js' %}"></script>#}
+{#    <script src="{% static 'lib/easing/easing.min.js' %}"></script>#}
+{#    <script src="{% static 'lib/mobile-nav/mobile-nav.js' %}"></script>#}
+{#    <script src="{% static 'lib/wow/wow.min.js' %}"></script>#}
+{#    <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>#}
+{#    <script src="{% static 'lib/counterup/counterup.min.js' %}"></script>#}
+{#    <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>#}
+{#    <script src="{% static 'lib/isotope/isotope.pkgd.min.js' %}"></script>#}
+{#    <script src="{% static 'lib/lightbox/js/lightbox.min.js' %}"></script>#}
 
     <!-- Contact Form JavaScript File -->
-    <script src="{% static 'contactform/contactform.js' %}"></script>
+{#    <script src="{% static 'contactform/contactform.js' %}"></script>#}
 
-    <!-- Template Main Javascript File -->
-    <script src="{% static 'contactform/contactform.js' %}"></script>
 
-    {% block js_files %}{% endblock js_files %}
+    {% block js_files %} {% endblock js_files %}
     {% endblock body %}
 </body>
 </html>

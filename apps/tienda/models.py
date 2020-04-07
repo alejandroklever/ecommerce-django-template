@@ -32,3 +32,10 @@ class Stock(models.Model):
 
     def __str__(self):
         return f'{self.cantidad} unidades de {self.producto} en la tienda {self.tienda}'
+
+
+class Categoria(models.Model):
+    tag = models.CharField(default='Otros', max_length=25, unique=True)
+
+    def __str__(self):
+        return self.tag

@@ -40,7 +40,9 @@ INSTALLED_APPS = [
     'apps.compra',
     'apps.subasta',
     'apps.tienda',
-    'apps.usuario'
+    'apps.usuario',
+    'widget_tweaks',
+    'bootstrap4',
 ]
 
 MIDDLEWARE = [
