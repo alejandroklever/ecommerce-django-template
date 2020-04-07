@@ -2,275 +2,131 @@
 
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>La Peseta</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
 
-    <head>
-        <meta charset="utf-8">
-        <title>
-            {% block Title %}
-                La Peseta
-            {% endblock Title %}
-        </title>
-        <meta content="width=device-width, initial-scale=1.0" name="viewport">
-        <meta content="" name="keywords">
-        <meta content="" name="description">
+    <!-- Favicons -->
+    <link href="{% static 'img/favicon.png' %}" rel="icon">
+    <link href="{% static 'img/apple-touch-icon.png' %}" rel="apple-touch-icon">
 
-        <!-- Favicons -->
-        <link href="{% static 'img/favicon.png' %}" rel="icon">
-        <link href="{% static 'img/apple-touch-icon.png' %}" rel="apple-touch-icon">
+    <!-- Bootstrap CSS File -->
+    <link href="{% static 'lib/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
 
-        <!-- Bootstrap CSS File -->
-        <link href="{% static 'lib/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <!-- Libraries CSS Files -->
+    <link href="{% static 'lib/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
+    <link href="{% static 'lib/animate/animate.min.css' %}" rel="stylesheet">
+    <link href="{% static 'lib/ionicons/css/ionicons.min.css' %}" rel="stylesheet">
+    <link href="{% static 'lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+    <link href="{% static 'lib/lightbox/css/lightbox.min.css' %}" rel="stylesheet">
+{#    <link href="{% static 'css/shop-homepage.css' %}" rel="stylesheet">#}
 
-        <!-- Libraries CSS Files -->
-        <link href="{% static 'lib/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
-        <link href="{% static 'lib/animate/animate.min.css' %}" rel="stylesheet">
-        <link href="{% static 'lib/ionicons/css/ionicons.min.css' %}" rel="stylesheet">
-        <link href="{% static 'lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
-        <link href="{% static 'lib/lightbox/css/lightbox.min.css' %}" rel="stylesheet">
-        <link href="{% static 'css/shop-homepage.css' %}" rel="stylesheet">
+    <!-- Main Stylesheet File -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    {% block css_files %}{% endblock css_files %}
+</head>
 
-        <!-- Main Stylesheet File -->
-        <link href="{% static 'css/style.css' %}" rel="stylesheet">
-        {% block css_files %}{% endblock css_files %}
-        <!-- =======================================================
-        Theme Name: Rapid
-        Theme URL: https://bootstrapmade.com/rapid-multipurpose-bootstrap-business-template/
-        Author: BootstrapMade.com
-        License: https://bootstrapmade.com/license/
-        ======================================================= -->
-    </head>
+<body {% block body_class %}{% endblock body_class %}>
+    {% block body %}
+    {% block body_content %}
+    {% block header %}
+    <nav class="navbar" style="background-color: rgba(191,221,233,0.76)">
+        <div class="container">
+            <div class="logo float-left">
+                <h1 class="text-light">
+                    <a href="{% url 'index' %}"><strong>La Peseta</strong></a>
+                </h1>
+            </div>
 
-    <body {% block body_class %}{% endblock body_class %}>
-        {% block body %}
-            {% block body_content %}
-                {% block header %}
-                    <header id="header" style="background-color: rgba(191,221,233,0.76)">
+            <nav class="main-nav float-right d-none d-lg-block">
+                <ul>
+                    <li class="active"><a href="{% url 'index' %}">Inicio</a></li>
+                    <li><a href="{% url 'tienda:mostrar-tienda' %}">Mi Tienda</a></li>
+                    {% if tienda_id %}
+                    <li><a href="{% url 'tienda:editar-tienda' tienda_id %}">Editar</a></li>
+                    {% endif %}
+                    <li><a>Productos</a></li>
+                    <li><a href="{% url 'tienda:listar-tiendas' %}">Tiendas</a></li>
+                    <li><a href="{% url 'compra:listar-carrito' %}">Carrito</a></li>
+                    {% if tienda_id %}
+                    <li><a href="{% url 'usuario:login' %}">Login</a></li>
+                    {% else %}
+                    <li><a href="{% url 'usuario:logout' %}">Logout</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </nav>
+    {% endblock header %}
 
-
-                        <div class="container">
-                            <div class="logo float-left">
-                                <h1 class="text-light">
-                                    <a href="{% url 'index' %}" class="scrollto">
-                                        <span>
-                                            <strong>
-                                                La Peseta
-                                            </strong>
-                                        </span>
-                                    </a>
-                                </h1>
-                            </div>
-
-                            <nav class="main-nav float-right d-none d-lg-block">
-                                <ul>
-                                    <li class="active"><a href="{% url 'index' %}">Inicio</a></li>
-                                    {% block other_options %}
-                                        <li>
-                                            <a href="{% url 'tienda:mostrar-tienda' %}">
-                                                Mi Tienda
-                                            </a>
-                                        </li>
-                                        {% if tienda_id %}
-                                            <li>
-                                                <a href="{% url 'tienda:editar-tienda' tienda_id %}">
-                                                    Editar
-                                                </a>
-                                            </li>
-                                        {% endif %}
-                                        <li>
-                                            <a>
-                                                Productos
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="{% url 'tienda:listar-tiendas' %}">
-                                                Tiendas
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="{% url 'compra:listar-carrito' %}">
-                                                Carrito
-                                            </a>
-                                        </li>
-
-                                        {% if user.username == '' %}
-                                            <li>
-                                                <a href="{% url 'usuario:login' %}">
-                                                    Login
-                                                </a>
-                                            </li>
-                                        {% else %}
-                                            <li>
-                                                <a href="{% url 'usuario:logout' %}">
-                                                    Logout
-                                                </a>
-                                            </li>
-                                        {% endif %}
-                                    {% endblock %}
-                                </ul>
-                            </nav>
-                        </div>
-                    </header>
-                {% endblock header %}
-                <!--==========================
-                Intro Section
-                ============================-->
-                {% block intro %}
-                    <section id="intro" style="padding-top: 200px" class="clearfix">
-                        <div class="container d-flex h-100">
-                            <div class="row justify-content-center align-self-center">
-                                <div class="col-md-6 intro-info order-md-first order-last">
-                                    {% if user.username == '' %}
-                                        <h2>
-                                            La Peseta<br>Obten tu propia <span>Tienda</span>
-                                        </h2>
-                                    {% else %}
-                                        <h2>
-                                            <span>Bienvenid@ {{ user }}!</span><br>Gracias por elegirnos :)
-                                        </h2>
-                                    {% endif %}
-                                    <div>
-                                        <a href="#about" class="btn-get-started scrollto">
-                                            Informacion
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 intro-img order-md-last order-first">
-                                    <img src="{% static 'img/intro-img.svg' %}" alt="" class="img-fluid">
-                                </div>
-                            </div>
-                        </div>
-                    </section><!-- #intro -->
-                {% endblock intro %}
-
-                <main id="main">
-                    {% block Content %}
-                        <!--==========================
-                        Team Section
-                        ============================-->
-                        <section id="team" class="section-bg">
-                            <div class="container">
-                                <div class="section-header">
-                                    <h3>Team</h3>
-                                    <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque</p>
-                                </div>
-
-                                <div class="row">
-
-                                    <div class="col-lg-3 col-md-6 wow fadeInUp">
-                                        <div class="member">
-                                            <img src="{% static 'img/team-1.jpg' %}" class="img-fluid" alt="">
-                                            <div class="member-info">
-                                                <div class="member-info-content">
-                                                    <h4>Walter White</h4>
-                                                    <span>Chief Executive Officer</span>
-                                                    <div class="social">
-                                                        <a href=""><i class="fa fa-twitter"></i></a>
-                                                        <a href=""><i class="fa fa-facebook"></i></a>
-                                                        <a href=""><i class="fa fa-google-plus"></i></a>
-                                                        <a href=""><i class="fa fa-linkedin"></i></a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                                        <div class="member">
-                                            <img src="{% static 'img/team-2.jpg' %}" class="img-fluid" alt="">
-                                            <div class="member-info">
-                                                <div class="member-info-content">
-                                                    <h4>Sarah Jhonson</h4>
-                                                    <span>Product Manager</span>
-                                                    <div class="social">
-                                                        <a href=""><i class="fa fa-twitter"></i></a>
-                                                        <a href=""><i class="fa fa-facebook"></i></a>
-                                                        <a href=""><i class="fa fa-google-plus"></i></a>
-                                                        <a href=""><i class="fa fa-linkedin"></i></a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.2s">
-                                        <div class="member">
-                                            <img src="{% static 'img/team-3.jpg' %}" class="img-fluid" alt="">
-                                            <div class="member-info">
-                                                <div class="member-info-content">
-                                                    <h4>William Anderson</h4>
-                                                    <span>CTO</span>
-                                                    <div class="social">
-                                                        <a href=""><i class="fa fa-twitter"></i></a>
-                                                        <a href=""><i class="fa fa-facebook"></i></a>
-                                                        <a href=""><i class="fa fa-google-plus"></i></a>
-                                                        <a href=""><i class="fa fa-linkedin"></i></a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
-                                        <div class="member">
-                                            <img src="{% static 'img/team-4.jpg' %}" class="img-fluid" alt="">
-                                            <div class="member-info">
-                                                <div class="member-info-content">
-                                                    <h4>Amanda Jepson</h4>
-                                                    <span>Accountant</span>
-                                                    <div class="social">
-                                                        <a href=""><i class="fa fa-twitter"></i></a>
-                                                        <a href=""><i class="fa fa-facebook"></i></a>
-                                                        <a href=""><i class="fa fa-google-plus"></i></a>
-                                                        <a href=""><i class="fa fa-linkedin"></i></a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                            </div>
-                        </section><!-- #team -->
-                    {% endblock Content %}
-                </main>
-            {% endblock body_content %}
-            <!--==========================
-            Footer
-            ============================-->
-            {% block footer %}
-                <footer class="section-bg footer_mio">
-                    <div class="container">
-                        <div class="copyright">
-                            &copy; Copyright <strong>La Peseta</strong>. All Rights Reserved
-                            <br>
-                            Designed by RegCode
-                        </div>
+    <section id="intro" class="clearfix" style="padding: 200px">
+        {% block intro %}
+        <div class="container d-flex h-100">
+            <div class="row justify-content-center align-self-center">
+                <div class="col-md-6 intro-info order-md-first order-last">
+                    {% if not tienda_id %}
+                    <h2>
+                        La Peseta <br>Obten tu propia <span>Tienda</span>
+                    </h2>
+                    {% else %}
+                    <h2>
+                        <span>Bienvenid@ {{ user }}!</span><br>Gracias por elegirnos :)
+                    </h2>
+                    {% endif %}
+                    <div>
+                        <a href="#about" class="btn-get-started scrollto">Informacion</a>
                     </div>
-                </footer>
-                <a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
-            {% endblock footer %}
-            <!-- JavaScript Libraries -->
-            <script src="{% static 'lib/jquery/jquery.min.js' %}"></script>
-            <script src="{% static 'lib/jquery/jquery-migrate.min.js' %}"></script>
-            <script src="{% static 'lib/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-            <script src="{% static 'lib/easing/easing.min.js' %}"></script>
-            <script src="{% static 'lib/mobile-nav/mobile-nav.js' %}"></script>
-            <script src="{% static 'lib/wow/wow.min.js' %}"></script>
-            <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
-            <script src="{% static 'lib/counterup/counterup.min.js' %}"></script>
-            <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
-            <script src="{% static 'lib/isotope/isotope.pkgd.min.js' %}"></script>
-            <script src="{% static 'lib/lightbox/js/lightbox.min.js' %}"></script>
+                </div>
+                <div class="col-md-6 intro-img order-md-last order-first">
+                    <img src="{% static 'img/intro-img.svg' %}" alt="" class="img-fluid">
+                </div>
+            </div>
 
-            <!-- Contact Form JavaScript File -->
-            <script src="{% static 'contactform/contactform.js' %}"></script>
+        </div>
+        {% endblock intro %}
+    </section>
 
-            <!-- Template Main Javascript File -->
-            <script src="{% static 'contactform/contactform.js' %}"></script>
+    <main id="main">
+        {% block Content %}{% endblock Content %}
+    </main>
+    {% endblock body_content %}
+    <!--==========================
+    Footer
+    ============================-->
+    {% block footer %}
+    <footer class="section-bg footer-info">
+        <div class="container">
+            <div class="copyright">
+                &copy; Copyright <strong>La Peseta</strong>. All Rights Reserved<br>Designed by RegCode
+            </div>
+        </div>
+    </footer>
+    <a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
+    {% endblock footer %}
+    <!-- JavaScript Libraries -->
+    <script src="{% static 'lib/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'lib/jquery/jquery-migrate.min.js' %}"></script>
+    <script src="{% static 'lib/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'lib/easing/easing.min.js' %}"></script>
+    <script src="{% static 'lib/mobile-nav/mobile-nav.js' %}"></script>
+    <script src="{% static 'lib/wow/wow.min.js' %}"></script>
+    <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
+    <script src="{% static 'lib/counterup/counterup.min.js' %}"></script>
+    <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'lib/isotope/isotope.pkgd.min.js' %}"></script>
+    <script src="{% static 'lib/lightbox/js/lightbox.min.js' %}"></script>
 
-            {% block js_files %}{% endblock js_files %}
-        {% endblock body %}
-    </body>
+    <!-- Contact Form JavaScript File -->
+    <script src="{% static 'contactform/contactform.js' %}"></script>
+
+    <!-- Template Main Javascript File -->
+    <script src="{% static 'contactform/contactform.js' %}"></script>
+
+    {% block js_files %}{% endblock js_files %}
+    {% endblock body %}
+</body>
 </html>
