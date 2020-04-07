@@ -38,7 +38,12 @@
                                 </h6>
                                 <h6><strong>Precio: </strong>{{ pedido.stock.producto.precio }}$</h6>
                                 <h6><strong>Unidades: </strong>{{ pedido.cantidad }}</h6>
-                                <input type="checkbox" name="selected" id="id_selected">
+                                <div class="checkbox">
+                                <label for="{{ pedido.id }}">
+                                    <strong>Seleccionar: </strong>
+                                    <input type="checkbox" id="id_{{ pedido.id }}" name="pedido{{ pedido.id }}"/>
+                                </label>
+                            </div>
                             </div>
                             <div class="card-footer">
                                 <small class="text-muted">&#9733; &#9733; &#9733; &#9733; &#9734;</small>
