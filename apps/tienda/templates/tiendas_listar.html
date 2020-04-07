@@ -2,33 +2,32 @@
 {% load staticfiles %}
 
 
+
 {% block content %}
-<div class="col-lg-12" style="padding-right: 10rem; padding-left: 10rem; padding-top: 7rem">
-<h3 class="need-pd header-font-lp"><strong>Listado de Tiendas existentes</b></strong></h3>
-<div class="row" style="padding-bottom: 3rem">
-     {% for tienda in tiendas %}
-      <div class="col-lg-3 col-md-6 mb-3">
-        <div class="card h-100">
-            {% if tienda.imagen %}
-                {# aca va la foto asignada a la tienda #}
-                {# <td style="padding-left: 10px">{{ tienda.imagen }}</td> #}
-            {% else %}
-                <a><img class="card-img-top" src="{% static 'img/900x350.png' %}" alt=""></a>
-            {% endif %}
-            <div class="card-body">
-            <h4 class="card-title">
-              <a>{{ tienda.nombre }}</a>
-            </h4>
-            <button class="btn btn-info">
-                <a style="color: #171a1d;" href={% url 'tienda:visitar-tienda' tienda.id %}>Entrar</a>
-            </button>
-          </div>
-          <div class="card-footer">
-            <small class="text-muted">&#9733; &#9733; &#9733; &#9733; &#9734;</small>
-          </div>
+<h1 class="text-center" style="padding: 25px;"><strong>Listado de Tiendas</strong></h1>
+
+<div class="container">
+    <div class="row">
+        {% for tienda in tiendas %}
+        <div class="col-lg-4 mb-3 animated fadeInLeft" style="animation-delay: 0.5s">
+            <div class="card">
+{#                {% if tienda.imagen %}#}
+{#                    aca va la foto asignada a la tienda #}
+{#                <td style="padding-left: 10px">{{ tienda.imagen }}</td> #}
+{#                {% else %}#}
+{#                    <a><img class="card-img-top" src="{% static 'img/900x350.png' %}" alt=""></a>#}
+{#                {% endif %}#}
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <a href={% url 'tienda:visitar-tienda' tienda.id %}>{{ tienda.nombre }}</a>
+                    </h5>
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted">&#9733; &#9733; &#9733; &#9733; &#9734;</small>
+                </div>
+            </div>
         </div>
-      </div>
-    {% endfor %}
-</div>
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}

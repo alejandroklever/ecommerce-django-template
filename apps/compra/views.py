@@ -4,12 +4,12 @@ from django.core.handlers.wsgi import WSGIRequest
 from django.http import Http404
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.views.generic import ListView, FormView
+from django.views.generic import FormView
 
 from apps.compra.forms import PedidoForm
 from apps.compra.models import Pedido, Compra, Carrito
 from apps.tienda.forms import StockForm
-from apps.tienda.models import Stock, Tienda
+from apps.tienda.models import Stock, Tienda, Categoria
 
 
 class PagarPedidosVista(FormView):
@@ -33,7 +33,8 @@ class DetalleProductosVista(FormView):
         self.tienda = Tienda.objects.get(id=self.kwargs['tienda_id'])
 
         context['stock'] = self.stock
-        context['tienda'] = self.tienda
+        context['tienda_id'] = self.tienda
+
         return context
 
     def post(self, request: WSGIRequest, *args, **kwargs):
@@ -57,11 +58,7 @@ class DetalleProductosVista(FormView):
             # TODO: check for count of items in stock
             pass
 
-        Compra(fecha_hora=time,
-               tienda=tienda,
-               comprador=comprador,
-               producto=stock.producto,
-               cantidad=cantidad).save()
+        Compra(fecha_hora=time, tienda=tienda, comprador=comprador, producto=stock.producto, cantidad=cantidad).save()
 
         form = StockForm({'cantidad': stock.cantidad - int(cantidad)}, instance=stock)
         if form.is_valid():
@@ -91,20 +88,16 @@ class DetalleProductosVista(FormView):
         return redirect('compra:listar-carrito')
 
 
-class PagarPedidosDelCarritoVista(FormView):
-    model = Pedido
-    template_name = 'listar-carrito.html'
-
-
 class ListarPedidosVista(FormView):
-    template_name = 'listar-carrito.html'
-    context_object_name = 'productos'
+    template_name = 'listar_carrito.html'
     form_class = PedidoForm
-    success_url = reverse_lazy('index')
+    success_url = reverse_lazy('compra:listar-carrito')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['productos'] = Pedido.objects.filter(carrito__usuario=self.request.user)
+        context['pedidos'] = Pedido.objects.filter(carrito__usuario=self.request.user)
+        context['tienda_id'] = self.request.user.tienda.id
+        context['categorias'] = Categoria.objects.all()
         return context
 
     def post(self, request, *args, **kwargs):
@@ -127,11 +120,7 @@ class ListarPedidosVista(FormView):
             # TODO: check for count of items in stock
             pass
 
-        Compra(fecha_hora=fecha,
-               tienda=tienda,
-               comprador=comprador,
-               producto=stock.producto,
-               cantidad=cantidad).save()
+        Compra(fecha_hora=fecha, tienda=tienda, comprador=comprador, producto=stock.producto, cantidad=cantidad).save()
 
         form = StockForm({'cantidad': stock.cantidad - cantidad}, instance=stock)
         if form.is_valid():
@@ -139,4 +128,4 @@ class ListarPedidosVista(FormView):
 
     @staticmethod
     def __del(pedido):
-        pass
+        pedido.delete()

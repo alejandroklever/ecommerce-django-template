@@ -1,21 +1,43 @@
-{% extends 'index.html' %}
+{% extends 'index-fixed.html' %}
 
 
-{% block title %} {{ stock.producto }} {% endblock %}
+{% block content %}
+    <div class="container" style="padding: 200px 200px 200px">
+        <form method="post">
+            {% csrf_token %}
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="text-center"><strong>Detalles de {{ stock.producto.nombre }}</strong></h5>
+                </div>
+                <div class="container" style="padding: 0 75px">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-12 mb-2">
+                                <p class="card-title">Descripcion : {{ stock.producto.descripcion }}</p>
+                            </div>
+                            <div class="col-lg-12 mb-2">
+                                <p class="card-title">Precio : {{ stock.producto.precio }}</p>
+                            </div>
+                            <div class="col-lg-12 mb-2">
+                                <p class="card-title">Cantidad : {{ stock.cantidad }}</p>
+                            </div>
+                            <div class="col-lg-6 mb2">
+                                <div class="form-group">
+                                    <input class="form-control" type="number" name="cantidad" id="id_cantidad" value="1">
+                                </div>
+                            </div>
+                            <div class="col-lg-6 mb2">
+                                <div class="btn-group-ls text-center">
+                                    <button class="btn btn-primary" type="submit" name="action" value="pagar">Pagar</button>
+                                    <button class="btn btn-primary" type="submit" name="action" value="carrito">Carrito</button>
+                                    <a class="btn btn-danger" href="{% url 'tienda:visitar-tienda' stock.tienda.id %}">Cancelar</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-
-{% block Content %}
-    <h1>Nombre : {{ stock.producto.nombre }}</h1>
-    <p>Descripcion : {{ stock.producto.descripcion }}</p>
-    <p>Precio : {{ stock.producto.precio }}</p>
-    <p>Cantidad : {{ stock.cantidad }}</p>
-
-    <form method="post">
-        {% csrf_token %}
-        <label for="id_name"></label>
-        <input type="number" name="cantidad" id="id_name" value="1" step="1">
-
-        <button type="submit" name="action" value="pagar">Pagar</button>
-        <button type="submit" name="action" value="carrito">Carrito</button>
-    </form>
+            </div>
+        </form>
+    </div>
 {% endblock %}

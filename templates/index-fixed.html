@@ -13,10 +13,7 @@
             <ul>
                 <li><a href="{% url 'index' %}">Inicio</a></li>
                 <li><a href="{% url 'tienda:mostrar-tienda' %}">Mi Tienda</a></li>
-                {% if tienda_id %}
-                <li><a href="{% url 'tienda:editar-tienda' tienda_id %}">Editar</a></li>
-                {% endif %}
-                <li><a>Productos</a></li>
+                <li><a href="{% url 'tienda:listar-productos'%}">Productos</a></li>
                 <li><a href="{% url 'tienda:listar-tiendas' %}">Tiendas</a></li>
                 <li><a href="{% url 'compra:listar-carrito' %}">Carrito</a></li>
                 {% if not tienda_id %}

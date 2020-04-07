@@ -20,17 +20,30 @@ class ListarTiendasVista(ListView):
     def get_queryset(self):
         return Tienda.objects.exclude(usuario_id=self.request.user.id)
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categorias'] = Categoria.objects.all()
+        if not isinstance(self.request.user, AnonymousUser):
+            context['tienda_id'] = self.request.user.tienda.id
+        return context
+
 
 class ListarProductosVista(ListView):
     """
     Lista de todos productos existentes
     """
-    model = Producto
-    template_name = 'tiendas_listar.html'
-    context_object_name = 'productos'
+    template_name = 'productos_listar.html'
+    context_object_name = 'stock_list'
 
     def get_queryset(self):
-        return Tienda.objects.exclude(usuario_id=self.request.user.id)
+        return Stock.objects.exclude(tienda__usuario_id=self.request.user.id)
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categorias'] = Categoria.objects.all()
+        if not isinstance(self.request.user, AnonymousUser):
+            context['tienda_id'] = self.request.user.tienda.id
+        return context
 
 
 class VisitarTiendaVista(ListView):
@@ -47,6 +60,10 @@ class VisitarTiendaVista(ListView):
 
         context['tienda'] = Tienda.objects.get(id=tienda_id)
         context['stock_list'] = Stock.objects.filter(tienda_id=tienda_id)
+        context['categorias'] = Categoria.objects.all()
+
+        if not isinstance(self.request.user, AnonymousUser):
+            context['tienda_id'] = self.request.user.tienda.id
 
         return context
 
@@ -82,6 +99,11 @@ class EditarTienda(UpdateView):
     form_class = ActualizarTiendaForm
     success_url = reverse_lazy('tienda:mostrar-tienda')
     context_object_name = 'tienda'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['tienda_id'] = self.request.user.tienda.id
+        return context
 
 
 # noinspection PyAttributeOutsideInit
