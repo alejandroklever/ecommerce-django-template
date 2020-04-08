@@ -7,10 +7,10 @@ app_name = 'subasta'
 
 urlpatterns = [
     path('', login_required(views.subasta_init, login_url="usuario:login"), name="inicio-subasta"),
-    path('tienda', login_required(views.listar_subastas, login_url="usuario:login"), name="listar-subastas"),
+    path('listar', login_required(views.SubastasListar.as_view(), login_url="usuario:login"), name="listar-subastas"),
     path('usuario', login_required(views.listar_subastas_usuario, login_url="usuario:login"),
          name="listar-subastas-usuario"),
-    path('agregar_subasta', login_required(views.agregar_subasta, login_url="usuario:login"), name="crear-subasta"),
+    path('crear', login_required(views.crear_subasta, login_url="usuario:login"), name="crear-subasta"),
     path('buscar', login_required(views.busqueda_mostrar_subastas, login_url="usuario:login"), name="buscar-subastas"),
     path('finalizadas', login_required(views.listar_subasta_terminadas, login_url="usuario:login"),
          name="listar-subastas-finalizadas"),

@@ -3,9 +3,14 @@ import threading
 from time import sleep
 
 from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import redirect, render
 from django.template import loader
+from django.urls import reverse_lazy
+from django.views.generic import ListView, FormView
+from django_tables2 import SingleTableView
 
-from apps.tienda.models import Producto
+from apps.subasta.forms import SubastaForm
+from apps.tienda.models import Producto, Categoria
 from .models import SubastaFinalizada, SubastaEnCurso
 
 mutex = threading.Lock()
@@ -16,12 +21,28 @@ def subasta_init(request):
     return HttpResponse(template.render({'user_name': request.user.username}))
 
 
-def listar_subastas(request):
-    user = request.user
-    subastas_en_curso = SubastaEnCurso.objects.filter(tienda__usuario_id=user.id)
-    template = loader.get_template("listar_subastas.html")
-    context = {'subastas_en_curso': subastas_en_curso, 'user': user.username}
-    return HttpResponse(template.render(context, request))
+class SubastasListar(ListView):
+    model = SubastaEnCurso
+    template_name = 'subastas_listar.html'
+    context_object_name = 'subastas'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['tienda_id'] = self.request.user.tienda.id
+        context['categorias'] = Categoria.objects.all()
+        return context
+
+
+class DetallesSubasta(FormView):
+    template_name = 'subasta_detalles.html'
+    form_class = SubastaForm
+    success_url = reverse_lazy('subasta:listar-subastas')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['tienda_id'] = self.request.user.tienda.id
+        context['categorias'] = Categoria.objects.all()
+        return context
 
 
 def listar_subastas_usuario(request):
@@ -40,26 +61,25 @@ def listar_subasta_terminadas(request):
     return HttpResponse(template.render(context, request))
 
 
-def agregar_subasta(request):
-    template = loader.get_template('agregar_subasta.html')
+def crear_subasta(request):
+    template = loader.get_template('crear_subasta.html')
     if request.method == 'POST':
         try:
             nombre = request.POST['nombre']
-            _precio = request.POST['precio']
+            precio = request.POST['precio']
             descripcion = request.POST['descripcion']
-            imagen = request.POST['img']
-            _prod = Producto(nombre=nombre, precio=_precio, descripcion=descripcion, imagen=imagen)
-            _prod.save()
-            hora = request.POST['hora_fecha'].split('-')
-            hora_t = request.POST['hora_reloj'].split(':')
-            _final = datetime.datetime(year=int(hora[0]), month=int(hora[1]), day=int(hora[2]), hour=int(hora_t[0]),
-                                       minute=int(hora_t[1]))
-            _start = datetime.datetime.now()
-            _tienda = request.user.tienda
-            new_sub = SubastaEnCurso(pujante=None, tienda=_tienda, producto=_prod, precio_inicial=_precio,
-                                     precio_actual=_precio, hora_inicio=_start, hora_final=_final)
-            new_sub.save()
-            return HttpResponseRedirect('/subasta')
+            imagen = None
+            producto = Producto(nombre=nombre, precio=precio, descripcion=descripcion, imagen=imagen)
+            producto.save()
+            date, time = request.POST['hora_final'].split('T')
+            date = [int(x) for x in date.split('-')]
+            time = [int(x) for x in time.split(':')]
+            final = datetime.datetime(year=date[0], month=date[1], day=date[2], hour=time[0], minute=time[1])
+            tienda = request.user.tienda
+            SubastaEnCurso(tienda=tienda, producto=producto, precio_inicial=precio,
+                           precio_actual=precio, hora_final=final).save()
+
+            return redirect('tienda:mostrar-tienda')
         except Exception as exc:
             if exc.args[0] == 'User has no tienda.':
                 return HttpResponse(template.render({'message': "Necesitas una tienda para poder subastar productos"}))
@@ -71,7 +91,7 @@ def agregar_subasta(request):
 def busqueda_mostrar_subastas(request):
     try:
         _name = request.GET['prod_name']
-    except:
+    except KeyError:
         _name = ''
     subastas_usuario = SubastaEnCurso.objects.filter(pujante_id=request.user.id)
     subastas_tienda = SubastaEnCurso.objects.filter(tienda__usuario_id=request.user.id)
@@ -118,7 +138,6 @@ class DestroyerThread(threading.Thread):
                 subasta.delete()
             mutex.release()
             sleep(60)
-
 
 # a = DestroyerThread(1, "Thread-1", 1)
 # a.start()

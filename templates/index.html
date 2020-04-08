@@ -43,10 +43,10 @@
 
             <nav class="main-nav float-right d-none d-lg-block">
                 <ul>
-                    <li class="animated fadeInDown" style="animation-delay: 100ms"><a href="{% url 'index' %}">Inicio</a></li>
                     <li class="animated fadeInDown" style="animation-delay: 100ms"><a href="{% url 'tienda:mostrar-tienda' %}">Mi Tienda</a></li>
                     <li class="animated fadeInDown" style="animation-delay: 100ms"><a href="{% url 'tienda:listar-productos'%}">Productos</a></li>
                     <li class="animated fadeInDown" style="animation-delay: 100ms"><a href="{% url 'tienda:listar-tiendas' %}">Tiendas</a></li>
+                    <li class="animated fadeInDown" style="animation-delay: 100ms"><a href="{% url 'subasta:listar-subastas' %}">Subastas</a></li>
                     <li class="animated fadeInDown" style="animation-delay: 100ms"><a href="{% url 'compra:listar-carrito' %}">Carrito</a></li>
                     {% if not tienda_id %}
                     <li class="animated fadeInDown" style="animation-delay: 100ms"><a href="{% url 'usuario:login' %}">Login</a></li>

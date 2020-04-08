@@ -17,7 +17,10 @@
                         <a class="list-group-item"><label><input type="checkbox"></label> {{ categoria }}</a>
                         {% endfor %}
                     </div>
-                    </div>
+                </div>
+                <div class="col-lg-12 mb-2 animated fadeInDown" style="animation-delay: 0.75s">
+                    <a class="btn btn-outline-danger" href="{% url 'index' %}">Filtrar</a>
+                </div>
                 <div class="col-lg-12 mb-2 animated fadeInDown" style="animation-delay: 0.75s">
                     <a class="btn btn-outline-primary" href="{% url 'index' %}">Regresar</a>
                 </div>

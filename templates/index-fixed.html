@@ -11,10 +11,10 @@
 
         <nav class="main-nav float-right d-none d-lg-block">
             <ul>
-                <li><a href="{% url 'index' %}">Inicio</a></li>
                 <li><a href="{% url 'tienda:mostrar-tienda' %}">Mi Tienda</a></li>
                 <li><a href="{% url 'tienda:listar-productos'%}">Productos</a></li>
                 <li><a href="{% url 'tienda:listar-tiendas' %}">Tiendas</a></li>
+                <li><a href="{% url 'subasta:listar-subastas' %}">Subastas</a></li>
                 <li><a href="{% url 'compra:listar-carrito' %}">Carrito</a></li>
                 {% if not tienda_id %}
                 <li><a href="{% url 'usuario:login' %}">Login</a></li>
