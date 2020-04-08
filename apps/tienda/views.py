@@ -1,6 +1,6 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.handlers.wsgi import WSGIRequest
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, UpdateView, DeleteView, FormView
@@ -9,7 +9,7 @@ from .forms import ActualizarTiendaForm, ProductoForm, StockForm
 from .models import Tienda, Producto, Stock, Categoria
 
 
-class ListarTiendasVista(ListView):
+class ListarTiendas(ListView):
     """
     Lista de todas las tiendas existentes excepto la del propio usuario
     """
@@ -28,7 +28,7 @@ class ListarTiendasVista(ListView):
         return context
 
 
-class ListarProductosVista(ListView):
+class ListarProductos(ListView):
     """
     Lista de todos productos existentes
     """
@@ -46,7 +46,7 @@ class ListarProductosVista(ListView):
         return context
 
 
-class VisitarTiendaVista(ListView):
+class VisitarTienda(ListView):
     """
     Muestra los productos de la tienda especificada por el parametro pk
     """
@@ -69,7 +69,7 @@ class VisitarTiendaVista(ListView):
 
 
 # noinspection PyAttributeOutsideInit
-class MostrarTienda(ListView):
+class MostrarTienda(LoginRequiredMixin, ListView):
     template_name = 'tienda_usuario_mostrar.html'
     context_object_name = 'user_stock_list'
 
@@ -93,7 +93,7 @@ class MostrarTienda(ListView):
 
 
 # noinspection PyAttributeOutsideInit
-class EditarTienda(UpdateView):
+class EditarTienda(LoginRequiredMixin, UpdateView):
     model = Tienda
     template_name = 'tienda_usuario_editar.html'
     form_class = ActualizarTiendaForm
@@ -164,7 +164,7 @@ class EditarProducto(FormView):
 
         return context
 
-    def post(self, request: WSGIRequest, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         self.create_fields(**kwargs)
 
         form_stock = self.form_class(request.POST, instance=self.stock)

@@ -1,5 +1,6 @@
 import datetime
 
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.handlers.wsgi import WSGIRequest
 from django.http import Http404
 from django.shortcuts import redirect
@@ -12,12 +13,8 @@ from apps.tienda.forms import StockForm
 from apps.tienda.models import Stock, Tienda, Categoria
 
 
-class PagarPedidosVista(FormView):
-    pass
-
-
 # noinspection PyAttributeOutsideInit
-class DetalleProductosVista(FormView):
+class DetalleProductosVista(LoginRequiredMixin, FormView):
     """
     Clase encargada de mostrar la informacion de un producto de una tienda
     Y mostrar las acciones de comprar o agregar productos al carrito
@@ -74,12 +71,10 @@ class DetalleProductosVista(FormView):
 
         carrito, _ = Carrito.objects.get_or_create(usuario_id=user.id)
 
-        pedido, _ = Pedido.objects.get_or_create(defaults={'cantidad': 0,
-                                                           'tienda': tienda},
+        pedido, _ = Pedido.objects.get_or_create(defaults={'cantidad': 0, 'tienda': tienda},
                                                  stock_id=stock.id, usuario_id=user.id)
 
-        form = self.form_class({'cantidad': pedido.cantidad + cantidad,
-                                'seleccionado': False}, instance=pedido)
+        form = self.form_class({'cantidad': pedido.cantidad + cantidad, 'seleccionado': False}, instance=pedido)
 
         if form.is_valid():
             form.save()
@@ -88,7 +83,7 @@ class DetalleProductosVista(FormView):
         return redirect('compra:listar-carrito')
 
 
-class ListarPedidosVista(FormView):
+class ListarPedidosVista(LoginRequiredMixin, FormView):
     template_name = 'listar_carrito.html'
     form_class = PedidoForm
     success_url = reverse_lazy('compra:listar-carrito')

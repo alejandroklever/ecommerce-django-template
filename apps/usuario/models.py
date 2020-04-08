@@ -9,3 +9,14 @@ class UserMetaData(models.Model):
 
     def __str__(self):
         return str(self.user.username)
+
+
+class IUser(User):
+    username = None
+    first_name = None
+    profile_image = None
+    last_name = None
+    email = None
+    password = None
+    user_permissions = None
+    is_superuser = None
