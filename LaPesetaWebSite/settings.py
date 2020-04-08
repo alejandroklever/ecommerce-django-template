@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'apps.subasta',
     'apps.tienda',
     'apps.usuario',
-    'django_tables2'
 ]
 
 MIDDLEWARE = [
