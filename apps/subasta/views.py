@@ -62,7 +62,7 @@ def listar_subasta_terminadas(request):
 
 
 def crear_subasta(request):
-    template = loader.get_template('crear_subasta.html')
+    template = loader.get_template('subasta_crear.html')
     if request.method == 'POST':
         try:
             nombre = request.POST['nombre']
