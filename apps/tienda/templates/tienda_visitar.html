@@ -7,10 +7,10 @@
     <div class="row">
         <div class="col-lg-3">
             <div class="row">
-                <div class="col-lg-12 animated fadeInDown" style="padding: 5px; animation-delay: 0.25s">
-                    <h3><strong>Bienvenid@ a <b>{{ tienda.nombre }}</b></strong></h3>
+                <div class="col-lg-12 mb-2 animated fadeInDown faster">
+                    <h3 class="need-pd header-font-lp"><strong>Bienvenid@ a <b>{{ tienda.nombre }}</b></strong></h3>
                 </div>
-                <div class="col-lg-12 animated fadeInDown" style="padding: 5px; animation-delay: 0.5s">
+                <div class="col-lg-12 mb-2 animated fadeInDown fast">
                     <a class="list-group-item">Categorias</a>
                     <div class="list-group">
                         {% for categoria in categorias %}
@@ -18,7 +18,7 @@
                         {% endfor %}
                     </div>
                 </div>
-                <div class="col-lg-12 animated fadeInDown" style="padding: 5px; animation-delay: 0.75s">
+                <div class="col-lg-12 mb-2 animated fadeInDown fast">
                     <a class="btn btn-outline-primary" href="{% url 'tienda:listar-tiendas' %}">Regresar</a>
                 </div>
             </div>
@@ -26,7 +26,7 @@
         <div class="col-lg-9">
             <div class="row">
                 {% for stock in stock_list %}
-                <div class="col-lg-4 mb-3 animated fadeInLeft" style="animation-delay: 1s">
+                <div class="col-lg-4 mb-3 animated fadeInLeft slow">
                     <div class="card">
                         <div class="card-body">
                             <h6><strong>Producto: </strong>

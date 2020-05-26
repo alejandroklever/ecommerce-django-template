@@ -1,1 +1,1 @@
-# Shopping WebSite for Software Ingeneering class
+# Shopping WebSite for Software Engineering class
