@@ -2,23 +2,18 @@ import datetime
 import threading
 from time import sleep
 
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect
 from django.template import loader
 from django.urls import reverse_lazy
 from django.views.generic import ListView, FormView
-from django_tables2 import SingleTableView
 
 from apps.subasta.forms import SubastaForm
 from apps.tienda.models import Producto, Categoria
 from .models import SubastaFinalizada, SubastaEnCurso
 
 mutex = threading.Lock()
-
-
-def subasta_init(request):
-    template = loader.get_template("init.html")
-    return HttpResponse(template.render({'user_name': request.user.username}))
 
 
 class SubastasListar(ListView):
@@ -45,10 +40,33 @@ class DetallesSubasta(FormView):
         return context
 
 
+class ListarSubastasUsuario(LoginRequiredMixin, ListView):
+    template_name = 'listar-subastas-usuario.html'
+    context_object_name = 'subastas_usuario'
+
+    def get_queryset(self):
+        SubastaEnCurso.objects.filter(tienda__usuario=self.request.user)
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['user'] = self.request.user
+        return context
+
+
+class ListarSubastasUsuarioSubscripcion(LoginRequiredMixin, ListView):
+    def get_queryset(self):
+        SubastaEnCurso.objects.filter(pujante=self.request.user)
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['user'] = self.request.user
+        return context
+
+
 def listar_subastas_usuario(request):
     user = request.user
     subastas_usuario = SubastaEnCurso.objects.filter(pujante_id=user.id)
-    template = loader.get_template("listar_subastas_usuario.html")
+    template = loader.get_template("listar-subastas-usuario.html")
     context = {'subastas_usuario': subastas_usuario, 'user': user.username}
     return HttpResponse(template.render(context, request))
 

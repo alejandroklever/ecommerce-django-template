@@ -6,7 +6,6 @@ import apps.subasta.views as views
 app_name = 'subasta'
 
 urlpatterns = [
-    path('', login_required(views.subasta_init, login_url="usuario:login"), name="inicio-subasta"),
     path('listar', login_required(views.SubastasListar.as_view(), login_url="usuario:login"), name="listar-subastas"),
     path('usuario', login_required(views.listar_subastas_usuario, login_url="usuario:login"),
          name="listar-subastas-usuario"),

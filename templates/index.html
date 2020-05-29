@@ -12,6 +12,8 @@
 
     <!-- Bootstrap CSS File -->
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/bootstrap-grid.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/bootstrap-reboot.min.css' %}" rel="stylesheet">
 
     <!-- Libraries CSS Files -->
     <link href="{% static 'css/animate.min.css' %}" rel="stylesheet">
@@ -30,7 +32,6 @@
                     <a href="{% url 'index' %}"><strong>La Peseta</strong></a>
                 </h1>
             </div>
-
             <nav class="main-nav float-right d-none d-lg-block">
                 <ul>
                     <li class="animated fadeInDown" style="animation-delay: 100ms"><a href="{% url 'tienda:mostrar-tienda' %}">Mi Tienda</a></li>
@@ -53,7 +54,7 @@
     <section id="intro" class="clearfix" style="padding: 225px">
         <div class="container d-flex h-100">
             <div class="row justify-content-center align-self-center">
-                <div class="col-md-6 intro-info animated fadeInLeft" style="animation-delay: 500ms">
+                <div class="col-md-6 intro-info animated fadeInLeft fast">
                     {% if not tienda_id %}
                     <h2>La Peseta <br>Obten tu propia <span>Tienda</span></h2>
                     {% else %}
@@ -99,7 +100,11 @@
 {#    <script src="{% static 'contactform/contactform.js' %}"></script>#}
 
 
-    {% block js_files %} {% endblock js_files %}
+    <!-- El orden de los js importa [jquery, popper, bootstrap] -->
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
     {% endblock body %}
 </body>
 </html>
