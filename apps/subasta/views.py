@@ -10,13 +10,13 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, FormView
 
 from apps.subasta.forms import SubastaForm
+from apps.subasta.models import SubastaFinalizada, SubastaEnCurso
 from apps.tienda.models import Producto, Categoria
-from .models import SubastaFinalizada, SubastaEnCurso
 
 mutex = threading.Lock()
 
 
-class SubastasListar(ListView):
+class ListarSubastas(LoginRequiredMixin, ListView):
     model = SubastaEnCurso
     template_name = 'subastas_listar.html'
     context_object_name = 'subastas'
@@ -25,6 +25,32 @@ class SubastasListar(ListView):
         context = super().get_context_data(**kwargs)
         context['tienda_id'] = self.request.user.tienda.id
         context['categorias'] = Categoria.objects.all()
+        return context
+
+
+class ListarSubastasUsuario(LoginRequiredMixin, ListView):
+    template_name = 'listar_subastas_usuario.html'
+    context_object_name = 'subastas_usuario'
+
+    def get_queryset(self):
+        SubastaEnCurso.objects.filter(tienda__usuario=self.request.user)
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['user'] = self.request.user
+        return context
+
+
+class ListarSubscripcionesUsuario(LoginRequiredMixin, ListView):
+    template_name = 'listar_subastas_usuario.html'
+    context_object_name = 'subastas_usuario'
+
+    def get_queryset(self):
+        SubastaEnCurso.objects.filter(pujante=self.request.user)
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['user'] = self.request.user
         return context
 
 
@@ -40,33 +66,10 @@ class DetallesSubasta(FormView):
         return context
 
 
-class ListarSubastasUsuario(LoginRequiredMixin, ListView):
-    template_name = 'listar-subastas-usuario.html'
-    context_object_name = 'subastas_usuario'
-
-    def get_queryset(self):
-        SubastaEnCurso.objects.filter(tienda__usuario=self.request.user)
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['user'] = self.request.user
-        return context
-
-
-class ListarSubastasUsuarioSubscripcion(LoginRequiredMixin, ListView):
-    def get_queryset(self):
-        SubastaEnCurso.objects.filter(pujante=self.request.user)
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['user'] = self.request.user
-        return context
-
-
 def listar_subastas_usuario(request):
     user = request.user
     subastas_usuario = SubastaEnCurso.objects.filter(pujante_id=user.id)
-    template = loader.get_template("listar-subastas-usuario.html")
+    template = loader.get_template("listar_subastas_usuario.html")
     context = {'subastas_usuario': subastas_usuario, 'user': user.username}
     return HttpResponse(template.render(context, request))
 

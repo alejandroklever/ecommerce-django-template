@@ -1,5 +1,6 @@
 {% extends 'index.html' %}
 
+
 {% block navbar %}
 <nav class="navbar" style="background-color: rgba(191,221,233,0.76)">
     <div class="container">
@@ -14,13 +15,7 @@
                 <li><a href="{% url 'tienda:mostrar-tienda' %}">Mi Tienda</a></li>
                 <li><a href="{% url 'tienda:listar-productos'%}">Productos</a></li>
                 <li><a href="{% url 'tienda:listar-tiendas' %}">Tiendas</a></li>
-                <li class="dropdown-menu">
-                    <a class="dropdown-item">Action</a>
-                    <a class="dropdown-item">Action</a>
-                    <a class="dropdown-item">Action</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item">Action</a>
-                </li>
+                <li><a href="{% url 'subasta:listar-subscripciones' %}">Subscripciones</a></li>
                 <li><a href="{% url 'subasta:listar-subastas' %}">Subastas</a></li>
                 <li><a href="{% url 'compra:listar-carrito' %}">Carrito</a></li>
                 {% if not tienda_id %}
@@ -33,5 +28,4 @@
     </div>
 </nav>
 {% endblock %}
-
 {% block intro %} {% endblock %}
