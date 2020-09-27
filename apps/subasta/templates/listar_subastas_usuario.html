@@ -4,3 +4,39 @@
 {% block main_text %}
 <h3 class="need-pd header-font-lp"><strong>Administración de <b>{{ nombre_tienda }}</b></strong></h3>
 {% endblock %}
+
+{% block buttons %}
+<div class="col-lg-12 mb-2 animated fadeInUp fast">
+    <a class="btn btn-outline-primary" href="{% url 'tienda:crear-producto' %}">Agregar Producto</a>
+</div>
+<div class="col-lg-12 mb-2 animated fadeInUp fast">
+    <a class="btn btn-outline-primary" href="{% url 'tienda:editar-tienda' tienda_id %}">Editar Perfil</a>
+</div>
+<div class="col-lg-12 mb-2 animated fadeInDown fast">
+    <a class="btn btn-outline-primary" href="{% url 'subasta:crear-subasta' %}">Subastar</a>
+</div>
+<div class="col-lg-12 mb-2 animated fadeInDown fast">
+    <a class="btn btn-outline-danger" href="{% url 'index' %}">Regresar</a>
+</div>
+{% endblock %}
+
+{% block loop %}
+{% for subasta in subastas_usuario %}
+<div class="col-lg-4 mb-3 animated fadeInLeft slow">
+    <div class="card">
+        <div class="card-body">
+            <h6><strong>Producto: </strong>{{ stock.producto.nombre }}</h6>
+            <h6><strong>Precio  : </strong>{{ stock.producto.precio }}$</h6>
+            <h6><strong>Cantidad: </strong>{{ stock.cantidad }}</h6>
+            <div class="btn-group btn-group-sm">
+                <a class="btn btn-outline-secondary" href={% url 'tienda:editar-producto' stock.id %}>Editar</a>
+                <a class="btn btn-outline-danger" href={% url 'tienda:borrar-producto' stock.producto.id %}>Eliminar</a>
+            </div>
+        </div>
+        <div class="card-footer">
+            <small class="text-muted">&#9733; &#9733; &#9733; &#9733; &#9734;</small>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}
