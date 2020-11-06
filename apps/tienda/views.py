@@ -109,7 +109,7 @@ class EditarTienda(LoginRequiredMixin, UpdateView):
 # noinspection PyAttributeOutsideInit
 class CrearProducto(FormView):
     model = Stock
-    template_name = 'producto_crear_editar.html'
+    template_name = 'producto_form.html'
     form_class = StockForm
     second_form_class = ProductoForm
     success_url = reverse_lazy('tienda:mostrar-tienda')
@@ -143,7 +143,7 @@ class CrearProducto(FormView):
 # noinspection PyAttributeOutsideInit
 class EditarProducto(FormView):
     model = Stock
-    template_name = 'producto_crear_editar.html'
+    template_name = 'producto_form.html'
     form_class = StockForm
     second_form_class = ProductoForm
     success_url = reverse_lazy('tienda:mostrar-tienda')

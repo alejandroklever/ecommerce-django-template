@@ -21,9 +21,37 @@
 </div>
 {% endblock %}
 
+{% block filters %}
+<div class="col">
+    <div class="d-flex justify-content-start">
+        <label for="search"></label>
+        <input class="form-control"
+               id="search"
+               type="text"
+               placeholder="Buscar..."
+               oninput="search()">
+    </div>
+</div>
+<div class="col offset-3">
+    <div class="d-flex justify-content-end mr-2">
+        <button class="btn btn-outline-secondary mr-2" onclick="orderBy()">Asc</button>
+        <label for="order_by"></label>
+        <select id="order_by" class="form-control mr-2">
+            <option>hola</option>
+            <option>hola</option>
+            <option>hola</option>
+            <option>hola</option>
+        </select>
+{#        <a class="btn btn-outline-primary" href="{% url 'tienda:crear-producto' %}">#}
+            <i class="fas fa-plus-circle"></i>
+{#        </a>#}
+    </div>
+</div>
+{% endblock %}
+
 {% block loop %}
 {% for stock in user_stock_list %}
-<div class="col-lg-4 mb-3 animated fadeInLeft slow">
+<div id="{{ stock.producto.nombre.lower }}" class="col-lg-4 mb-3">
     <div class="card">
         <div class="card-body">
             <h6><strong>Producto: </strong>{{ stock.producto.nombre }}</h6>

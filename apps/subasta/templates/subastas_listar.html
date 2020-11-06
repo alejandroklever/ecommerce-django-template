@@ -1,101 +1,68 @@
-{% extends 'index-fixed.html'%}
+{% extends 'list-template.html'%}
 {% load static %}
 
 
-{% block content %}
-<div class="container" style="padding: 25px">
-    <div class="row">
-        <div class="col-lg-3 mb-2">
-            <div class="row">
-                <div class="col-lg-12 mb-2 animated fadeInDown faster">
-                    <h3><strong>Subastas en Curso</strong></h3>
-                </div>
-                <div class="col-lg-12 mb-2 animated fadeInDown fast">
-                    <div class="form-group">
-                        <label>
-                            <input class="form-control" type="text" placeholder="Buscar...">
-                        </label>
-                    </div>
-                </div>
-                <div class="col-lg-12 mb-2 animated fadeInDown fast">
-                    <div class="list-group">
-                        <a class="list-group-item">Categorias</a>
-                        {% for categoria in categorias %}
-                        <a class="list-group-item"><label><input type="checkbox"></label> {{ categoria }}</a>
-                        {% endfor %}
-                    </div>
-                </div>
-                <div class="col-lg-12 mb-2 animated fadeInDown fast">
-                    <a class="btn btn-outline-primary" href="{% url 'index' %}">Filtrar</a>
-                </div>
-                <div class="col-lg-12 mb-2 animated fadeInDown fast">
-                    <a class="btn btn-outline-danger" href="{% url 'index' %}">Regresar</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-9 mb-2">
-            <div class="card animated fadeInDown slow">
-                <div class="card-body">
-                    <div class="table-container">
-                        <table class="table table-bordered" style="width: 100%; margin-bottom: 0">
-                            <thead>
-                                <tr>
-                                    <th class="orderable">Pujante</th>
-                                    <th class="orderable">Producto</th>
-                                    <th class="orderable">Descripcion</th>
-                                    <th class="orderable">Precio</th>
-                                    <th class="orderable">Hora Final</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for subasta in subastas %}
-                                <tr>
-                                    <td>{{ subasta.pujante }}</td>
-                                    <td><a href="{% url 'index' %}">{{ subasta.producto.nombre }}</a></td>
-                                    <td>{{ subasta.producto.descripcion }}</td>
-                                    <td>{{ subasta.precio_actual }}</td>
-                                    <td>{{ subasta.hora_final }}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
+{% block main_text %}
+<h3><strong>Subastas en Curso</strong></h3>
+{% endblock %}
+
+{% block buttons %}
+<div class="col-lg-12 mb-2 animated fadeInDown fast">
+    <a class="btn btn-outline-primary" href="{% url 'index' %}">Filtrar</a>
+</div>
+<div class="col-lg-12 mb-2 animated fadeInDown fast">
+    <a class="btn btn-outline-danger" href="{% url 'index' %}">Regresar</a>
+</div>
+{% endblock %}
+
+{% block filters %}
+<div class="col">
+    <div class="d-flex justify-content-start">
+        <label for="search"></label>
+        <input class="form-control"
+               id="search"
+               type="text"
+               placeholder="Buscar..."
+               oninput="search()">
+    </div>
+</div>
+<div class="col offset-3">
+    <div class="d-flex justify-content-end mr-2">
+        <button class="btn btn-outline-secondary mr-2" onclick="orderBy()">Asc</button>
+        <label for="order_by"></label>
+        <select id="order_by" class="form-control">
+            <option>hola</option>
+            <option>hola</option>
+            <option>hola</option>
+            <option>hola</option>
+        </select>
     </div>
 </div>
 {% endblock %}
-{#<!DOCTYPE html>#}
-{#<html lang="en">#}
-{#<head>#}
-{#    <meta charset="UTF-8">#}
-{#    <title>Mis Subastas</title>#}
-{#</head>#}
-{#<body>#}
-{#Subastas de {{ user}}#}
-{#<table>#}
-{#<tr>#}
-{#    <th>Pujante</th>#}
-{#    <th>Producto</th>#}
-{#    <th>Precio Actual</th>#}
-{#    <th>Precio Inicial</th>#}
-{#    <th>Hora Inicio</th>#}
-{#    <th>Hora Final</th>#}
-{#</tr>#}
-{#{% for elem in subastas_en_curso %}#}
-{#    <tr>#}
-{#    <td>[{{ elem.pujante}}]</td>#}
-{#    <td>[{{ elem.producto.nombre}}]</td>#}
-{#    <td>[{{ elem.precio_actual}}]</td>#}
-{#    <td>[{{ elem.precio_inicial}}]</td>#}
-{#    <td>[{{ elem.hora_inicio}}]</td>#}
-{#    <td>[{{ elem.hora_final}}]</td>#}
-{#    </tr>#}
-{#{% endfor %}#}
-{#</table>#}
-{#    <form action={% url 'subasta:inicio-subasta' %} method="get">#}
-{#        <input type="submit" value="Atras">#}
-{#    </form>#}
-{#</body>#}
-{#</html>#}
+{% block loop %}
+{% for subasta in subastas %}
+<div id="{{ subasta.producto.nombre.lower }}" class="col-lg-4 mb-3">
+    <div class="card">
+        <div class="card-body">
+            <h4>
+                <a href="{% url 'subasta:pujar' subasta.id%}">
+                    {{ subasta.producto.nombre }}
+                </a>
+            </h4>
+            <h6><strong>Tienda:    </strong> {{ subasta.tienda }}</h6>
+            <h6><strong>Comprador: </strong>
+            {% if subasta.pujante %}
+                {{ subasta.pujante  }}
+            {% else %}
+                {{ '-' }}
+            {% endif %}
+            </h6>
+            <h6><strong>Precio: </strong>{{ subasta.precio_actual }}</h6>
+        </div>
+        <div class="card-footer">
+            <span><b>Termina el {{ subasta.hora_final }} </b></span><br>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

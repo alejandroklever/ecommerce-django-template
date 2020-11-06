@@ -7,13 +7,40 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.template import loader
 from django.urls import reverse_lazy
-from django.views.generic import ListView, FormView
+from django.views.generic import CreateView, DeleteView, ListView, FormView
 
 from apps.subasta.forms import SubastaForm
 from apps.subasta.models import SubastaFinalizada, SubastaEnCurso
 from apps.tienda.models import Producto, Categoria
 
 mutex = threading.Lock()
+
+
+class CrearSubasta(LoginRequiredMixin, CreateView):
+    model = SubastaEnCurso
+    form_class = SubastaForm
+    template_name = 'subasta_crear.html'
+    success_url = reverse_lazy('subasta:listar-subastas-usuario')
+
+    def post(self, request, *args, **kwargs):
+        nombre = request.POST['nombre']
+        precio = request.POST['precio']
+        descripcion = request.POST['descripcion']
+        producto = Producto(nombre=nombre, precio=precio, descripcion=descripcion)
+        producto.save()
+
+        date, time = request.POST['hora_final'].split('T')
+        date = [int(x) for x in date.split('-')]
+        time = [int(x) for x in time.split(':')]
+        final_datetime = datetime.datetime(year=date[0], month=date[1], day=date[2], hour=time[0], minute=time[1])
+        tienda = request.user.tienda
+        SubastaEnCurso(tienda=tienda,
+                       producto=producto,
+                       precio_inicial=precio,
+                       precio_actual=precio,
+                       hora_final=final_datetime).save()
+
+        return redirect('tienda:mostrar-tienda')
 
 
 class ListarSubastas(LoginRequiredMixin, ListView):
@@ -66,60 +93,12 @@ class DetallesSubasta(FormView):
         return context
 
 
-def listar_subastas_usuario(request):
-    user = request.user
-    subastas_usuario = SubastaEnCurso.objects.filter(pujante_id=user.id)
-    template = loader.get_template("listar_subastas_usuario.html")
-    context = {'subastas_usuario': subastas_usuario, 'user': user.username}
-    return HttpResponse(template.render(context, request))
-
-
 def listar_subasta_terminadas(request):
     user = request.user
     subastas_terminada = SubastaFinalizada.objects.filter(tienda__usuario_id=user.id)
     template = loader.get_template("listar_subastas_finalizadas.html")
     context = {'subastas_finalizadas': subastas_terminada, 'user': user.username}
     return HttpResponse(template.render(context, request))
-
-
-def crear_subasta(request):
-    template = loader.get_template('subasta_crear.html')
-    if request.method == 'POST':
-        try:
-            nombre = request.POST['nombre']
-            precio = request.POST['precio']
-            descripcion = request.POST['descripcion']
-            imagen = None
-            producto = Producto(nombre=nombre, precio=precio, descripcion=descripcion, imagen=imagen)
-            producto.save()
-            date, time = request.POST['hora_final'].split('T')
-            date = [int(x) for x in date.split('-')]
-            time = [int(x) for x in time.split(':')]
-            final = datetime.datetime(year=date[0], month=date[1], day=date[2], hour=time[0], minute=time[1])
-            tienda = request.user.tienda
-            SubastaEnCurso(tienda=tienda, producto=producto, precio_inicial=precio,
-                           precio_actual=precio, hora_final=final).save()
-
-            return redirect('tienda:mostrar-tienda')
-        except Exception as exc:
-            if exc.args[0] == 'User has no tienda.':
-                return HttpResponse(template.render({'message': "Necesitas una tienda para poder subastar productos"}))
-            return HttpResponse(template.render({'message': "Conjunto de datos Invalido"}, request))
-    else:
-        return HttpResponse(template.render({}, request))
-
-
-def busqueda_mostrar_subastas(request):
-    try:
-        _name = request.GET['prod_name']
-    except KeyError:
-        _name = ''
-    subastas_usuario = SubastaEnCurso.objects.filter(pujante_id=request.user.id)
-    subastas_tienda = SubastaEnCurso.objects.filter(tienda__usuario_id=request.user.id)
-    template = loader.get_template('buscar_subastas.html')
-    results = [elem for elem in SubastaEnCurso.objects.filter(producto__nombre__contains=_name) if
-               elem not in subastas_usuario and elem not in subastas_tienda]
-    return HttpResponse(template.render({'elems': results}, request))
 
 
 def pujar(request, name, precio):

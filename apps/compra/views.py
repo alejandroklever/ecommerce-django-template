@@ -30,7 +30,7 @@ class DetalleProductosVista(LoginRequiredMixin, FormView):
         self.tienda = Tienda.objects.get(id=self.kwargs['tienda_id'])
 
         context['stock'] = self.stock
-        context['tienda_id'] = self.tienda
+        context['tienda'] = self.tienda
 
         return context
 
@@ -55,7 +55,11 @@ class DetalleProductosVista(LoginRequiredMixin, FormView):
             # TODO: check for count of items in stock
             pass
 
-        Compra(fecha_hora=time, tienda=tienda, comprador=comprador, producto=stock.producto, cantidad=cantidad).save()
+        Compra(fecha_hora=time,
+               tienda=tienda,
+               comprador=comprador,
+               producto=stock.producto,
+               cantidad=cantidad).save()
 
         form = StockForm({'cantidad': stock.cantidad - int(cantidad)}, instance=stock)
         if form.is_valid():

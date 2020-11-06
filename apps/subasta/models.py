@@ -14,6 +14,9 @@ class SubastaEnCurso(models.Model):
     hora_inicio = models.DateTimeField(default=timezone.now)
     hora_final = models.DateTimeField()
 
+    def __str__(self):
+        return f'{self.tienda} subasta {self.producto.nombre}'
+
 
 class SubastaFinalizada(models.Model):
     producto = models.CharField(max_length=80)

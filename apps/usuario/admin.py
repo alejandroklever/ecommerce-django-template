@@ -1,3 +1,5 @@
 from django.contrib import admin
 
-# Register your models here.
+from apps.usuario.models import UserMetaData
+
+admin.site.register(UserMetaData)
