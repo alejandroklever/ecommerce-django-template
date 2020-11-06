@@ -1,19 +1,6 @@
-{% extends 'list-template.html'%}
+{% extends 'list_template.html' %}
 {% load static %}
 
-
-{% block main_text %}
-<h3><strong>Subastas en Curso</strong></h3>
-{% endblock %}
-
-{% block buttons %}
-<div class="col-lg-12 mb-2 animated fadeInDown fast">
-    <a class="btn btn-outline-primary" href="{% url 'index' %}">Filtrar</a>
-</div>
-<div class="col-lg-12 mb-2 animated fadeInDown fast">
-    <a class="btn btn-outline-danger" href="{% url 'index' %}">Regresar</a>
-</div>
-{% endblock %}
 
 {% block filters %}
 <div class="col">
@@ -26,18 +13,20 @@
                oninput="search()">
     </div>
 </div>
-<div class="col offset-3">
-    <div class="d-flex justify-content-end mr-2">
-        <button class="btn btn-outline-secondary mr-2" onclick="orderBy()">Asc</button>
+<div class="col offset-2">
+    <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-secondary" onclick="orderBy()">Ordenar</button>
         <label for="order_by"></label>
-        <select id="order_by" class="form-control">
-            <option>hola</option>
-            <option>hola</option>
-            <option>hola</option>
-            <option>hola</option>
+        <select id="order_by" class="form-control mr-2">
+            <option>Nombre</option>
+            <option>Precio</option>
+            <option>Fecha</option>
+            <option>Cantidad</option>
         </select>
+        <a class="btn btn-outline-danger" href="{% url 'index' %}">Regresar</a>
     </div>
 </div>
+
 {% endblock %}
 {% block loop %}
 {% for subasta in subastas %}
@@ -45,7 +34,7 @@
     <div class="card">
         <div class="card-body">
             <h4>
-                <a href="{% url 'subasta:pujar' subasta.id%}">
+                <a href="{% url 'subasta:actualizar-subasta' subasta.id%}">
                     {{ subasta.producto.nombre }}
                 </a>
             </h4>

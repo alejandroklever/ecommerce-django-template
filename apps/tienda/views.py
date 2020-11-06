@@ -7,6 +7,7 @@ from django.views.generic import ListView, UpdateView, DeleteView, FormView
 
 from .forms import ActualizarTiendaForm, ProductoForm, StockForm
 from .models import Tienda, Producto, Stock, Categoria
+from ..subasta.models import SubastaEnCurso
 
 
 class ListarTiendas(ListView):
@@ -40,6 +41,7 @@ class ListarProductos(ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['page_header_text'] = 'Productos'
         context['categorias'] = Categoria.objects.all()
         if not isinstance(self.request.user, AnonymousUser):
             context['tienda_id'] = self.request.user.tienda.id
@@ -53,13 +55,18 @@ class VisitarTienda(ListView):
     model = Tienda
     template_name = 'tienda_visitar.html'
 
+    def get_queryset(self):
+        tienda_id = self.kwargs.get('tienda_id', 0)
+        print(Stock.objects.filter(tienda_id=tienda_id))
+        return Stock.objects.filter(tienda_id=tienda_id)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
         tienda_id = self.kwargs.get('tienda_id', 0)
 
         context['tienda'] = Tienda.objects.get(id=tienda_id)
-        context['stock_list'] = Stock.objects.filter(tienda_id=tienda_id)
+        context['page_header_text'] = f'Bienvenid@ a {context["tienda"]}'
         context['categorias'] = Categoria.objects.all()
 
         if not isinstance(self.request.user, AnonymousUser):
@@ -87,7 +94,7 @@ class MostrarTienda(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['tienda_id'] = self.user.tienda.id
-        context['nombre_tienda'] = self.user.tienda
+        context['page_header_text'] = 'Administracion de ' + str(self.user.tienda)
         context['categorias'] = Categoria.objects.all()
         return context
 

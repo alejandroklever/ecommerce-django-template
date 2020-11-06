@@ -36,7 +36,7 @@
                 <a class="dropdown-item dro" href="{% url 'tienda:crear-producto' %}">Agregar Producto</a>
                 <a class="dropdown-item" href="{% url 'subasta:crear-subasta' %}">Agregar Subasta</a>
                 <a class="dropdown-item" href="{% url 'tienda:editar-tienda' tienda_id %}">Editar Perfil</a>
-                <a class="dropdown-item" href="{% url 'subasta:listar-subastas-usuario' %}">Mis Subastas</a>
+                <a class="dropdown-item" href="{% url 'tienda:mostrar-tienda' %}">Mis Productos</a>
                 <div class="dropdown-divider"></div>
                 <h6 class="dropdown-header">Extras</h6>
                 <a class="dropdown-item" href="{% url 'index' %}">Regresar</a>
@@ -47,20 +47,26 @@
 {% endblock %}
 
 {% block loop %}
-{% for stock in user_stock_list %}
-<div id="{{ stock.producto.nombre.lower }}" class="col-lg-4 mb-3">
+{% for subasta in subastas %}
+<div id="{{ subasta.producto.nombre.lower }}" class="col-lg-4 mb-3">
     <div class="card">
         <div class="card-body">
-            <h6><strong>Producto: </strong>{{ stock.producto.nombre }}</h6>
-            <h6><strong>Precio  : </strong>{{ stock.producto.precio }}$</h6>
-            <h6><strong>Cantidad: </strong>{{ stock.cantidad }}</h6>
+            <h6><strong>{{ subasta.producto.nombre }}</strong></h6>
+            <h6><strong>Tienda:    </strong> {{ subasta.tienda }}</h6>
+            <h6><strong>Comprador: </strong>
+            {% if subasta.pujante %}
+                {{ subasta.pujante  }}
+            {% else %}
+                {{ '-' }}
+            {% endif %}
+            </h6>
+            <h6><strong>Precio: </strong>{{ subasta.precio_actual }}</h6>
             <div class="btn-group btn-group-sm">
-                <a class="btn btn-outline-secondary" href={% url 'tienda:editar-producto' stock.id %}>Editar</a>
-                <a class="btn btn-outline-danger" href={% url 'tienda:borrar-producto' stock.producto.id %}>Eliminar</a>
+               <a class="btn btn-outline-danger" href={% url 'tienda:borrar-producto' subasta.producto.id %}>Eliminar</a>
             </div>
         </div>
         <div class="card-footer">
-            <small class="text-muted">&#9733; &#9733; &#9733; &#9733; &#9734;</small>
+            <span><b>Termina el {{ subasta.hora_final }} </b></span><br>
         </div>
     </div>
 </div>
