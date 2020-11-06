@@ -1,0 +1,73 @@
+{% extends 'index_fixed.html' %}
+{% load static %}
+
+{% block content %}
+
+<h1 class="text-center" style="padding-top: 50px; padding-bottom: 25px"><strong>Subasta de {{ subasta.producto.nombre }}</strong></h1>
+
+<div class="container">
+    <div class="d-flex justify-content-center">
+        <form method="post">
+            {% csrf_token %}
+            <div class="card" style="max-width: 600px">
+                <div class="container">
+                    <div class="card-body">
+                        <div class="row" style="padding: 0 25px;">
+                            <div class="col-lg-12 mb-2">
+                                <h6>
+                                    <strong>
+                                        Actual Pujante:
+                                        {% if subasta.pujante %}
+                                        {{ subasta.pujante.username }}
+                                        {% else %}
+                                        {{ '-' }}
+                                        {% endif %}
+                                    </strong>
+                                </h6>
+                            </div>
+                            <div class="col-lg-12 mb-2">
+                                <h6><strong>Precio Actual: {{ subasta.precio_actual }}</strong></h6>
+                            </div>
+                            <div class="col-lg-12 mb-2">
+                                <strong>Descripcion: </strong>
+                                <div class="card">
+                                    <div class="text-body ml-2 mt-2 mb-2 mr-2">
+                                        {{ subasta.producto.descripcion }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-12 mb-2">
+                                <h6>
+                                    <strong>
+                                        Subasta activa hasta el {{ subasta.hora_final }}
+                                    </strong>
+                                </h6>
+                            </div>
+                            <div class="col-lg-6 mb-2">
+                                <div class="form-group">
+                                    <label for="id_precio_actual"><strong>Cuanto da usted:</strong></label>
+                                    <input class="form-control"
+                                           type="number"
+                                           id="id_precio_actual"
+                                           name="precio_actual"
+                                           min="{{ min_value }}"
+                                           step="0.05"
+                                           value="{{ subasta.precio_actual|floatformat }}">
+                                </div>
+                            </div>
+                            <div class="col-lg-6 mb-2">
+                                <div class="d-flex justify-content-end">
+                                    <div class="btn-group-ls" style="padding: 32px 0 0">
+                                        <button class="btn btn-primary" type="submit">Pujar</button>
+                                        <a class="btn btn-danger" type="submit" href="{% url 'subasta:listar-subastas-todas' %}">Cancelar</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

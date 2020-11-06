@@ -1,19 +1,19 @@
 from django.contrib.auth.views import login_required
 from django.urls import path
 
-from apps.subasta.views import (ListarSubastas, ListarSubscripcionesUsuario, ListarSubastasUsuario,
-                                crear_subasta, busqueda_mostrar_subastas, listar_subasta_terminadas,
-                                pujar)
+from apps.subasta import views
 
 app_name = 'subasta'
 
 urlpatterns = [
-    path('listar', ListarSubastas.as_view(), name="listar-subastas"),
-    path('usuario', ListarSubastasUsuario.as_view(), name="listar-subastas-usuario"),
-    path('subscripciones', ListarSubscripcionesUsuario.as_view(), name='listar-subscripciones'),
-    path('crear', login_required(crear_subasta, login_url="usuario:login"), name="crear-subasta"),
-    path('buscar', login_required(busqueda_mostrar_subastas, login_url="usuario:login"), name="buscar-subastas"),
-    path('finalizadas', login_required(listar_subasta_terminadas, login_url="usuario:login"),
+    path('crear', views.CrearSubasta.as_view(), name="crear-subasta"),
+    path('listar', views.ListaDeTodasLasSubastas.as_view(), name="listar-subastas-todas"),
+    path('usuario', views.ListaDeSubastasDeUsuario.as_view(), name="listar-subastas-usuario"),
+    path('<int:tienda_id>/productos', views.ListaDeSubastasDeTienda.as_view(), name="listar-subastas-tienda"),
+    path('subscripciones', views.ListaDeSubscripcionesDeUsuario.as_view(), name='listar-subscripciones'),
+    path('participar/<int:pk>', views.ActualizarSubasta.as_view(), name='actualizar-subasta'),
+
+    path('finalizadas', login_required(views.listar_subasta_terminadas, login_url="usuario:login"),
          name="listar-subastas-finalizadas"),
-    path('pujar/<str:name>&<str:precio>', login_required(pujar, login_url="usuario:login"), name="pujar")
+    path('pujar/<int:pk>', login_required(views.pujar, login_url="usuario:login"), name="pujar")
 ]

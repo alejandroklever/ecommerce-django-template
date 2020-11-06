@@ -26,25 +26,30 @@
         <a class="btn btn-outline-danger" href="{% url 'index' %}">Regresar</a>
     </div>
 </div>
-{% endblock %}
 
+{% endblock %}
 {% block loop %}
-{% for stock in stock_list %}
-<div id="{{ stock.producto.nombre.lower }}" class="col-lg-4 mb-3">
+{% for subasta in subastas %}
+<div id="{{ subasta.producto.nombre.lower }}" class="col-lg-4 mb-3">
     <div class="card">
         <div class="card-body">
-            <h6>
-                <strong>
-                    <a href="{% url 'compra:detalles-producto' stock.tienda.id stock.id%}">
-                        {{ stock.producto.nombre }}
-                    </a>
-                </strong>
+            <h4>
+                <a href="{% url 'subasta:actualizar-subasta' subasta.id%}">
+                    {{ subasta.producto.nombre }}
+                </a>
+            </h4>
+            <h6><strong>Tienda:    </strong> {{ subasta.tienda }}</h6>
+            <h6><strong>Comprador: </strong>
+            {% if subasta.pujante %}
+                {{ subasta.pujante  }}
+            {% else %}
+                {{ '-' }}
+            {% endif %}
             </h6>
-            <h6><strong>Precio  : </strong>{{ stock.producto.precio }}$</h6>
-            <h6><strong>Unidades: </strong>{{ stock.cantidad }}</h6>
+            <h6><strong>Precio: </strong>{{ subasta.precio_actual }}</h6>
         </div>
         <div class="card-footer">
-            <small class="text-muted">&#9733; &#9733; &#9733; &#9733; &#9734;</small>
+            <span><b>Termina el {{ subasta.hora_final }} </b></span><br>
         </div>
     </div>
 </div>
