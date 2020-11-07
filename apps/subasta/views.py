@@ -22,7 +22,9 @@ class CrearSubasta(LoginRequiredMixin, CreateView):
         nombre = request.POST['nombre']
         precio = request.POST['precio']
         descripcion = request.POST['descripcion']
-        producto = Producto(nombre=nombre, precio=precio, descripcion=descripcion)
+        producto = Producto(nombre=nombre,
+                            precio=precio,
+                            descripcion=descripcion)
         producto.save()
 
         date, time = request.POST['hora_final'].split('T')
@@ -88,9 +90,9 @@ class ListaDeSubastasDeUsuario(LoginRequiredMixin, ListView):
         return SubastaEnCurso.objects.filter(tienda__usuario=self.request.user)
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
+        context = super(ListaDeSubastasDeUsuario, self).get_context_data(**kwargs)
 
-        context['page_header_text'] = 'Subastas de ' + str(self.request.user.tienda.nombre)
+        context['page_header_text'] = f'Subastas de {self.request.user.tienda.nombre}'
         context['categorias'] = Categoria.objects.all()
 
         if not isinstance(self.request.user, AnonymousUser):
@@ -100,15 +102,21 @@ class ListaDeSubastasDeUsuario(LoginRequiredMixin, ListView):
 
 
 class ListaDeSubscripcionesDeUsuario(LoginRequiredMixin, ListView):
-    template_name = 'subastas_usuario_listar.html'
+    template_name = 'subastas_subscripciones_listar.html'
     context_object_name = 'subastas'
 
     def get_queryset(self):
         return SubastaEnCurso.objects.filter(pujante=self.request.user)
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['user'] = self.request.user
+        context = super(ListaDeSubscripcionesDeUsuario, self).get_context_data(**kwargs)
+
+        context['page_header_text'] = f'Subscripciones de {self.request.user.tienda.nombre}'
+        context['categorias'] = Categoria.objects.all()
+
+        if not isinstance(self.request.user, AnonymousUser):
+            context['tienda_id'] = self.request.user.tienda.id
+
         return context
 
 

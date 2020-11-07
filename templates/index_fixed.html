@@ -2,30 +2,52 @@
 
 
 {% block navbar %}
-<nav class="navbar" style="background-color: rgba(191,221,233,0.76)">
-    <div class="container">
-        <div class="logo float-left">
-            <h1 class="text-light">
-                <a href="{% url 'index' %}"><strong>La Peseta</strong></a>
-            </h1>
-        </div>
-
-        <nav class="main-nav float-right d-none d-lg-block">
-            <ul>
-                <li><a href="{% url 'tienda:mostrar-tienda' %}">Mi Tienda</a></li>
-                <li><a href="{% url 'tienda:listar-productos'%}">Productos</a></li>
-                <li><a href="{% url 'tienda:listar-tiendas' %}">Tiendas</a></li>
-                <li><a href="{% url 'subasta:listar-subscripciones' %}">Subscripciones</a></li>
-                <li><a href="{% url 'subasta:listar-subastas-todas' %}">Subastas</a></li>
-                <li><a href="{% url 'compra:listar-carrito' %}">Carrito</a></li>
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: rgba(191,221,233,0.76)">
+        <h1>
+            <a class="navbar-brand" href="{% url 'index' %}">
+                <strong>La Peseta</strong>
+            </a>
+        </h1>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'tienda:mostrar-tienda' %}">Mi Tienda</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'tienda:listar-productos' %}">Productos</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'tienda:listar-tiendas' %}">Tiendas</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'subasta:listar-subscripciones' %}">Subscripciones</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'subasta:listar-subastas-todas' %}">Subastas</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'compra:listar-carrito' %}">Carrito</a>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-dark my-2 my-sm-0" type="submit">Search</button>
+            </form>
+            <ul class="navbar-nav ml-auto">
                 {% if not tienda_id %}
-                <li><a href="{% url 'usuario:login' %}">Login</a></li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'usuario:login'%}">Login</a>
+                </li>
                 {% else %}
-                <li><a href="{% url 'usuario:logout' %}">Logout</a></li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'usuario:logout'%}">Logout</a>
+                </li>
                 {% endif %}
             </ul>
-        </nav>
-    </div>
-</nav>
-{% endblock %}
+        </div>
+    </nav>
+    {% endblock %}
 {% block intro %} {% endblock %}
