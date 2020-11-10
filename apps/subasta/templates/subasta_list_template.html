@@ -1,0 +1,34 @@
+{% extends 'list_template.html' %}
+{% load static %}
+
+{% block filters %}
+<div class="col">
+    <div class="d-flex justify-content-start">
+        <button class="btn btn-outline-secondary" type="submit">Buscar</button>
+        <label for="id_search"></label>
+        <input class="form-control"
+               id="id_search"
+               name="search"
+               type="text"
+               placeholder="Buscar..."
+               value="{{ search_value }}">
+    </div>
+</div>
+<div class="col offset-1">
+    <div class="d-flex justify-content-end">
+        <label for="id_sense"></label>
+        <select id="id_sense" name="sense" class="form-control mr-2">
+            <option {% if asc_option %}selected{% endif %}>ascendente</option>
+            <option {% if desc_option %}selected{% endif %}>descendente</option>
+        </select>
+        <label for="id_order_by"></label>
+        <select id="id_order_by" name="order_by" class="form-control mr-2">
+            <option></option>
+            <option {% if nombre_option %}selected{% endif %}>nombre</option>
+            <option {% if precio_option %}selected{% endif %}>precio</option>
+            <option {% if tiempo_option %}selected{% endif %}>tiempo</option>
+        </select>
+        {% block options %}{% endblock %}
+    </div>
+</div>
+{% endblock %}

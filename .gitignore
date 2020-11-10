@@ -142,3 +142,5 @@ cython_debug/
 .idea
 lapeseta.sqlite3
 .vscode
+
+media/

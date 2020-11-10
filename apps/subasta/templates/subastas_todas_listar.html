@@ -1,43 +1,25 @@
-{% extends 'list_template.html' %}
+{% extends 'subasta_list_template.html' %}
 {% load static %}
 
-
-{% block filters %}
-<div class="col">
-    <div class="d-flex justify-content-start">
-        <label for="search"></label>
-        <input class="form-control"
-               id="search"
-               type="text"
-               placeholder="Buscar..."
-               oninput="search()">
-    </div>
-</div>
-<div class="col offset-2">
-    <div class="d-flex justify-content-end">
-        <button class="btn btn-outline-secondary" onclick="orderBy()">Ordenar</button>
-        <label for="order_by"></label>
-        <select id="order_by" class="form-control mr-2">
-            <option>Nombre</option>
-            <option>Precio</option>
-            <option>Fecha</option>
-            <option>Cantidad</option>
-        </select>
-        <a class="btn btn-outline-danger" href="{% url 'index' %}">Regresar</a>
-    </div>
-</div>
-
+{% block options %}
+<a class="btn btn-outline-danger" href="{% url 'index' %}">Regresar</a>
 {% endblock %}
+
+
 {% block loop %}
 {% for subasta in subastas %}
 <div id="{{ subasta.producto.nombre.lower }}" class="col-lg-4 mb-3">
     <div class="card">
         <div class="card-body">
-            <h4>
-                <a href="{% url 'subasta:actualizar-subasta' subasta.id%}">
-                    {{ subasta.producto.nombre }}
-                </a>
-            </h4>
+            <h4><a href="{% url 'subasta:actualizar-subasta' subasta.id%}">{{ subasta.producto.nombre }}</a></h4>
+
+            {% if subasta.producto.imagen %}
+            <div class="card-img d-flex justify-content-center">
+                <img src="{{ stock.producto.imagen.url }}" alt="connected" style="max-height: 125px">
+            </div>
+            <br>
+            {% endif %}
+
             <h6><strong>Tienda:    </strong> {{ subasta.tienda }}</h6>
             <h6><strong>Comprador: </strong>
             {% if subasta.pujante %}

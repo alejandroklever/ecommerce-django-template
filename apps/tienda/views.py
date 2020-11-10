@@ -6,8 +6,52 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, UpdateView, DeleteView, FormView
 
-from .forms import ActualizarTiendaForm, ProductoForm, StockForm
-from .models import Tienda, Producto, Stock, Categoria
+from apps.tienda.forms import ActualizarTiendaForm, ProductoForm, StockForm
+from apps.tienda.models import Tienda, Producto, Stock, Categoria
+
+
+class StockListOrderedFilterView(ListView):
+    order_fields = {
+        'nombre': 'producto__nombre',
+        'precio': 'producto__precio',
+        'cantidad': 'cantidad',
+    }
+
+    def get_queryset(self):
+        return Stock.objects.all()
+
+    def filter_query_set(self, query_set):
+        query_dict = self.request.GET
+        if 'search' in query_dict and query_dict['search']:
+            query_set = query_set.filter(producto__nombre__contains=query_dict['search'])
+
+        if 'order_by' in query_dict and query_dict['order_by'] in self.order_fields:
+            order_key = self.order_fields[query_dict['order_by']]
+            if 'sense' in query_dict and query_dict['sense'] == 'descendente':
+                order_key = '-' + order_key
+            query_set = query_set.order_by(order_key)
+
+        return query_set
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(StockListOrderedFilterView, self).get_context_data(**kwargs)
+
+        query_dict = self.request.GET
+        context['animate_view'] = 'order_by' not in query_dict and 'search' not in query_dict
+
+        if 'order_by' in query_dict and query_dict['order_by']:
+            context['nombre_option'] = query_dict['order_by'] == 'nombre'
+            context['precio_option'] = query_dict['order_by'] == 'precio'
+            context['cantidad_option'] = query_dict['order_by'] == 'cantidad'
+
+        if 'sense' in query_dict and query_dict['sense']:
+            context['asc_option'] = query_dict['sense'] == 'ascendente'
+            context['desc_option'] = query_dict['sense'] == 'descendente'
+
+        if 'search' in query_dict and query_dict['search']:
+            context['search_value'] = query_dict['search']
+
+        return context
 
 
 class ListaDeTiendas(ListView):
@@ -29,7 +73,7 @@ class ListaDeTiendas(ListView):
         return context
 
 
-class ListaDeProductos(ListView):
+class ListaDeProductos(StockListOrderedFilterView):
     """
     Lista de todos productos existentes
     """
@@ -37,10 +81,11 @@ class ListaDeProductos(ListView):
     context_object_name = 'stock_list'
 
     def get_queryset(self):
-        return Stock.objects.exclude(tienda__usuario_id=self.request.user.id)
+        return self.filter_query_set(Stock.objects.exclude(tienda__usuario_id=self.request.user.id))
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
+
         context['page_header_text'] = 'Productos'
         context['categorias'] = Categoria.objects.all()
         if not isinstance(self.request.user, AnonymousUser):
@@ -48,17 +93,15 @@ class ListaDeProductos(ListView):
         return context
 
 
-class VisitarTienda(ListView):
+class VisitarTienda(StockListOrderedFilterView):
     """
     Muestra los productos de la tienda especificada por el parametro pk
     """
-    model = Tienda
     template_name = 'tienda_visitar.html'
 
     def get_queryset(self):
         tienda_id = self.kwargs.get('tienda_id', 0)
-        print(Stock.objects.filter(tienda_id=tienda_id))
-        return Stock.objects.filter(tienda_id=tienda_id)
+        return self.filter_query_set(Stock.objects.filter(tienda_id=tienda_id))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -76,7 +119,7 @@ class VisitarTienda(ListView):
 
 
 # noinspection PyAttributeOutsideInit
-class MostrarTienda(LoginRequiredMixin, ListView):
+class MostrarTienda(LoginRequiredMixin, StockListOrderedFilterView):
     template_name = 'tienda_usuario_mostrar.html'
     context_object_name = 'user_stock_list'
 
@@ -86,13 +129,15 @@ class MostrarTienda(LoginRequiredMixin, ListView):
         try:
             self.user.tienda
         except ObjectDoesNotExist:
-            # Creamos Tienda por Defecto
+            # Creamos una tienda por defecto
             self.user.tienda = Tienda(nombre=f'Tienda de {self.user}', usuario=self.user)
             self.user.tienda.save()
-        return Stock.objects.filter(tienda__usuario_id=self.user.id)
+
+        return self.filter_query_set(Stock.objects.filter(tienda__usuario_id=self.user.id))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
         context['tienda_id'] = self.user.tienda.id
         context['page_header_text'] = 'Administracion de ' + str(self.user.tienda)
         context['categorias'] = Categoria.objects.all()

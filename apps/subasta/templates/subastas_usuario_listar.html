@@ -1,47 +1,24 @@
-{% extends 'list_template.html' %}
+{% extends 'subasta_list_template.html' %}
 {% load static %}
 
-
-{% block filters %}
-<div class="col">
-    <div class="d-flex justify-content-start">
-        <label for="search"></label>
-        <input class="form-control"
-               id="search"
-               type="text"
-               placeholder="Buscar..."
-               oninput="search()">
-    </div>
-</div>
-<div class="col offset-3">
-    <div class="d-flex justify-content-end">
-        <button class="btn btn-outline-secondary" onclick="orderBy()">Ordenar</button>
-        <label for="order_by"></label>
-        <select id="order_by" class="form-control mr-2">
-            <option>Nombre</option>
-            <option>Precio</option>
-            <option>Fecha</option>
-            <option>Cantidad</option>
-        </select>
-        <div class="dropdown">
-            <div class="btn btn-outline-secondary dropdown-toggle"
-                 id="dropdownMenuButton"
-                 type="button"
-                 data-toggle="dropdown"
-                 aria-haspopup="true"
-                 aria-expanded="false"
-            >...</div>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <h6 class="dropdown-header">Opciones</h6>
-                <a class="dropdown-item dro" href="{% url 'tienda:crear-producto' %}">Agregar Producto</a>
-                <a class="dropdown-item" href="{% url 'subasta:crear-subasta' %}">Agregar Subasta</a>
-                <a class="dropdown-item" href="{% url 'tienda:editar-tienda' tienda_id %}">Editar Perfil</a>
-                <a class="dropdown-item" href="{% url 'tienda:mostrar-tienda' %}">Mis Productos</a>
-                <div class="dropdown-divider"></div>
-                <h6 class="dropdown-header">Extras</h6>
-                <a class="dropdown-item" href="{% url 'index' %}">Regresar</a>
-            </div>
-        </div>
+{% block options %}
+<div class="dropdown">
+    <div class="btn btn-outline-secondary dropdown-toggle"
+         id="dropdownMenuButton"
+         type="button"
+         data-toggle="dropdown"
+         aria-haspopup="true"
+         aria-expanded="false"
+    >...</div>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <h6 class="dropdown-header">Opciones</h6>
+        <a class="dropdown-item dro" href="{% url 'tienda:crear-producto' %}">Agregar Producto</a>
+        <a class="dropdown-item" href="{% url 'subasta:crear-subasta' %}">Agregar Subasta</a>
+        <a class="dropdown-item" href="{% url 'tienda:editar-tienda' tienda_id %}">Editar Perfil</a>
+        <a class="dropdown-item" href="{% url 'tienda:mostrar-tienda' %}">Mis Productos</a>
+        <div class="dropdown-divider"></div>
+        <h6 class="dropdown-header">Extras</h6>
+        <a class="dropdown-item" href="{% url 'index' %}">Regresar</a>
     </div>
 </div>
 {% endblock %}
@@ -52,6 +29,14 @@
     <div class="card">
         <div class="card-body">
             <h6><strong>{{ subasta.producto.nombre }}</strong></h6>
+
+            {% if subasta.producto.imagen %}
+            <div class="card-img d-flex justify-content-center">
+                <img src="{{ stock.producto.imagen.url }}" alt="connected" style="max-height: 125px">
+            </div>
+            <br>
+            {% endif %}
+
             <h6><strong>Tienda:    </strong> {{ subasta.tienda }}</h6>
             <h6><strong>Comprador: </strong>
             {% if subasta.pujante %}
