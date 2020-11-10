@@ -1,16 +1,16 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.handlers.wsgi import WSGIRequest
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, UpdateView, DeleteView, FormView
 
 from .forms import ActualizarTiendaForm, ProductoForm, StockForm
 from .models import Tienda, Producto, Stock, Categoria
-from ..subasta.models import SubastaEnCurso
 
 
-class ListarTiendas(ListView):
+class ListaDeTiendas(ListView):
     """
     Lista de todas las tiendas existentes excepto la del propio usuario
     """
@@ -29,7 +29,7 @@ class ListarTiendas(ListView):
         return context
 
 
-class ListarProductos(ListView):
+class ListaDeProductos(ListView):
     """
     Lista de todos productos existentes
     """
@@ -171,17 +171,21 @@ class EditarProducto(FormView):
 
         return context
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request: WSGIRequest, *args, **kwargs):
         self.create_fields(**kwargs)
 
         form_stock = self.form_class(request.POST, instance=self.stock)
-        form_producto = self.second_form_class(request.POST, instance=self.stock.producto)
+        form_producto = self.second_form_class(request.POST, request.FILES, instance=self.stock.producto)
 
         if form_stock.is_valid() and form_producto.is_valid():
+            imagen = form_producto.cleaned_data.get('imagen', None)
+            if imagen:
+                form_producto.instance.imagen = imagen
+
             form_producto.save()
             form_stock.save()
             return redirect(self.get_success_url())
-        self.render_to_response(self.get_context_data(form_producto=form_producto, form_stock=form_stock))
+        return self.render_to_response(self.get_context_data(form_producto=form_producto, form_stock=form_stock))
 
 
 class EliminarProducto(DeleteView):

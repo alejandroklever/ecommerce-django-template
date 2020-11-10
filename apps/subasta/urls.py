@@ -12,8 +12,4 @@ urlpatterns = [
     path('<int:tienda_id>/productos', views.ListaDeSubastasDeTienda.as_view(), name="listar-subastas-tienda"),
     path('subscripciones', views.ListaDeSubscripcionesDeUsuario.as_view(), name='listar-subscripciones'),
     path('participar/<int:pk>', views.ActualizarSubasta.as_view(), name='actualizar-subasta'),
-
-    path('finalizadas', login_required(views.listar_subasta_terminadas, login_url="usuario:login"),
-         name="listar-subastas-finalizadas"),
-    path('pujar/<int:pk>', login_required(views.pujar, login_url="usuario:login"), name="pujar")
 ]

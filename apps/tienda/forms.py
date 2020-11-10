@@ -22,26 +22,6 @@ class ProductoForm(forms.ModelForm):
             'imagen',
         ]
 
-        labels = {
-            'nombre': 'Nombre',
-            'precio': 'Precio',
-            'descripcion': 'Descripcion',
-            'imagen': 'Imagen',
-        }
-
-        widgets = {
-            'nombre': forms.TextInput(attrs={
-                'class': 'form-control'
-            }),
-            'precio': forms.NumberInput(attrs={
-                'step': '0.05'
-            }),
-            'descripcion': forms.Textarea(attrs={
-                'class': 'form-control'
-            }),
-            # 'imagen': forms.ImageField(allow_empty_file=True),
-        }
-
 
 class StockForm(forms.ModelForm):
     class Meta:
