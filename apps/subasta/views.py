@@ -11,6 +11,50 @@ from apps.subasta.models import SubastaEnCurso
 from apps.tienda.models import Producto, Categoria, Tienda
 
 
+class SubastaListOrderedFilterView(ListView):
+    order_fields = {
+        'nombre': 'producto__nombre',
+        'precio': 'producto__precio',
+        'tiempo': 'hora_final',
+    }
+
+    def get_queryset(self):
+        return SubastaEnCurso.objects.all()
+
+    def filter_query_set(self, query_set):
+        query_dict = self.request.GET
+        if 'search' in query_dict and query_dict['search']:
+            query_set = query_set.filter(producto__nombre__contains=query_dict['search'])
+
+        if 'order_by' in query_dict and query_dict['order_by'] in self.order_fields:
+            order_key = self.order_fields[query_dict['order_by']]
+            if 'sense' in query_dict and query_dict['sense'] == 'descendente':
+                order_key = '-' + order_key
+            query_set = query_set.order_by(order_key)
+
+        return query_set
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(SubastaListOrderedFilterView, self).get_context_data(**kwargs)
+
+        query_dict = self.request.GET
+        context['animate_view'] = 'order_by' not in query_dict and 'search' not in query_dict
+
+        if 'order_by' in query_dict and query_dict['order_by']:
+            context['nombre_option'] = query_dict['order_by'] == 'nombre'
+            context['precio_option'] = query_dict['order_by'] == 'precio'
+            context['cantidad_option'] = query_dict['order_by'] == 'cantidad'
+
+        if 'sense' in query_dict and query_dict['sense']:
+            context['asc_option'] = query_dict['sense'] == 'ascendente'
+            context['desc_option'] = query_dict['sense'] == 'descendente'
+
+        if 'search' in query_dict and query_dict['search']:
+            context['search_value'] = query_dict['search']
+
+        return context
+
+
 class CrearSubasta(LoginRequiredMixin, CreateView):
     model = SubastaEnCurso
     form_class = SubastaCreateForm
@@ -39,14 +83,14 @@ class CrearSubasta(LoginRequiredMixin, CreateView):
         return redirect('subasta:listar-subastas-usuario')
 
 
-class ListaDeSubastasDeTienda(LoginRequiredMixin, ListView):
+class ListaDeSubastasDeTienda(LoginRequiredMixin, SubastaListOrderedFilterView):
     model = SubastaEnCurso
     template_name = 'subastas_tienda_listar.html'
     context_object_name = 'subastas'
 
     def get_queryset(self):
         tienda_id = self.kwargs.get('tienda_id', 0)
-        return SubastaEnCurso.objects.filter(tienda_id=tienda_id)
+        return self.filter_query_set(SubastaEnCurso.objects.filter(tienda_id=tienda_id))
 
     def get_context_data(self, **kwargs):
         context = super(ListaDeSubastasDeTienda, self).get_context_data(**kwargs)
@@ -64,13 +108,13 @@ class ListaDeSubastasDeTienda(LoginRequiredMixin, ListView):
         return context
 
 
-class ListaDeTodasLasSubastas(LoginRequiredMixin, ListView):
+class ListaDeTodasLasSubastas(LoginRequiredMixin, SubastaListOrderedFilterView):
     model = SubastaEnCurso
     template_name = 'subastas_todas_listar.html'
     context_object_name = 'subastas'
 
     def get_queryset(self):
-        return SubastaEnCurso.objects.exclude(tienda__usuario=self.request.user)
+        return self.filter_query_set(SubastaEnCurso.objects.exclude(tienda__usuario=self.request.user))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -80,12 +124,12 @@ class ListaDeTodasLasSubastas(LoginRequiredMixin, ListView):
         return context
 
 
-class ListaDeSubastasDeUsuario(LoginRequiredMixin, ListView):
+class ListaDeSubastasDeUsuario(LoginRequiredMixin, SubastaListOrderedFilterView):
     template_name = 'subastas_usuario_listar.html'
     context_object_name = 'subastas'
 
     def get_queryset(self):
-        return SubastaEnCurso.objects.filter(tienda__usuario=self.request.user)
+        return self.filter_query_set(SubastaEnCurso.objects.filter(tienda__usuario=self.request.user))
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(ListaDeSubastasDeUsuario, self).get_context_data(**kwargs)
@@ -99,12 +143,12 @@ class ListaDeSubastasDeUsuario(LoginRequiredMixin, ListView):
         return context
 
 
-class ListaDeSubscripcionesDeUsuario(LoginRequiredMixin, ListView):
+class ListaDeSubscripcionesDeUsuario(LoginRequiredMixin, SubastaListOrderedFilterView):
     template_name = 'subastas_subscripciones_listar.html'
     context_object_name = 'subastas'
 
     def get_queryset(self):
-        return SubastaEnCurso.objects.filter(pujante=self.request.user)
+        return self.filter_query_set(SubastaEnCurso.objects.filter(pujante=self.request.user))
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(ListaDeSubscripcionesDeUsuario, self).get_context_data(**kwargs)
@@ -123,7 +167,7 @@ class ActualizarSubasta(UpdateView):
     form_class = SubastaUpdateForm
     template_name = 'subasta_actualizar.html'
     context_object_name = 'subasta'
-    success_url = reverse_lazy('subasta:listar-subastas-usuario')
+    success_url = reverse_lazy('subasta:listar-subscripciones')
 
     def get_context_data(self, **kwargs):
         context = super(ActualizarSubasta, self).get_context_data(**kwargs)

@@ -92,9 +92,42 @@ class ListarPedidosVista(LoginRequiredMixin, FormView):
     form_class = PedidoForm
     success_url = reverse_lazy('compra:listar-carrito')
 
+    order_fields = {
+        'nombre': 'stock__producto__nombre',
+        'precio': 'stock__producto__nombre',
+        'cantidad': 'cantidad',
+    }
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['pedidos'] = Pedido.objects.filter(carrito__usuario=self.request.user)
+
+        query_dict = self.request.GET
+        query_set = Pedido.objects.filter(carrito__usuario=self.request.user)
+        if 'search' in query_dict and query_dict['search']:
+            query_set = query_set.filter(stock__producto__nombre__contains=query_dict['search'])
+
+        if 'order_by' in query_dict and query_dict['order_by'] in self.order_fields:
+            order_key = self.order_fields[query_dict['order_by']]
+            if 'sense' in query_dict and query_dict['sense'] == 'descendente':
+                order_key = '-' + order_key
+            query_set = query_set.order_by(order_key)
+
+        context['animate_view'] = 'order_by' not in query_dict and 'search' not in query_dict
+
+        if 'order_by' in query_dict and query_dict['order_by']:
+            context['nombre_option'] = query_dict['order_by'] == 'nombre'
+            context['precio_option'] = query_dict['order_by'] == 'precio'
+            context['cantidad_option'] = query_dict['order_by'] == 'cantidad'
+
+        if 'sense' in query_dict and query_dict['sense']:
+            context['asc_option'] = query_dict['sense'] == 'ascendente'
+            context['desc_option'] = query_dict['sense'] == 'descendente'
+
+        if 'search' in query_dict and query_dict['search']:
+            context['search_value'] = query_dict['search']
+
+        context['page_header_text'] = 'Su Carrito de Compras'
+        context['pedidos'] = query_set
         context['tienda_id'] = self.request.user.tienda.id
         context['categorias'] = Categoria.objects.all()
         return context

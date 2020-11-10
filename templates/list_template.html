@@ -35,10 +35,12 @@
                     {% endblock %}
                 </div>
             </form>
+            {% block preloop %}
             <div id="item_list" class="row">
                 {% block loop %}
                 {% endblock %}
             </div>
+            {% endblock %}
         </div>
     </div>
 </div>
