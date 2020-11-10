@@ -143,4 +143,7 @@ cython_debug/
 lapeseta.sqlite3
 .vscode
 
-media/
+media/producto
+media/tienda
+!media/default_product_image.jpg
+!media/default_shop_image.jpg
