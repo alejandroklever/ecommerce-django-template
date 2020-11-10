@@ -1,31 +1,8 @@
-{% extends 'list_template.html' %}
+{% extends 'product_list_template.html' %}
 {% load static %}
 
-
-{% block filters %}
-<div class="col">
-    <div class="d-flex justify-content-start">
-        <label for="search"></label>
-        <input class="form-control"
-               id="search"
-               type="text"
-               placeholder="Buscar..."
-               oninput="search()">
-    </div>
-</div>
-<div class="col offset-2">
-    <div class="d-flex justify-content-end">
-        <button class="btn btn-outline-secondary" onclick="orderBy()">Ordenar</button>
-        <label for="order_by"></label>
-        <select id="order_by" class="form-control mr-2">
-            <option>Nombre</option>
-            <option>Precio</option>
-            <option>Fecha</option>
-            <option>Cantidad</option>
-        </select>
-        <a class="btn btn-outline-danger" href="{% url 'index' %}">Regresar</a>
-    </div>
-</div>
+{% block options %}
+<a class="btn btn-outline-danger" href="{% url 'index' %}">Regresar</a>
 {% endblock %}
 
 {% block loop %}
@@ -40,6 +17,12 @@
                     </a>
                 </strong>
             </h6>
+            {% if stock.producto.imagen %}
+            <div class="card-img d-flex justify-content-center">
+                <img src="{{ stock.producto.imagen.url }}" alt="connected" style="max-height: 125px">
+            </div>
+            <br>
+            {% endif %}
             <h6><strong>Precio  : </strong>{{ stock.producto.precio }}$</h6>
             <h6><strong>Unidades: </strong>{{ stock.cantidad }}</h6>
         </div>

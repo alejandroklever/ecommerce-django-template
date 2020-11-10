@@ -4,7 +4,7 @@
 {% block content %}
 <div class="container" style="padding: 25px">
     <div class="row">
-        <div class="col-lg-12 mb-2 text-center animated fadeInDown faster">
+        <div class="col-lg-12 mb-2 text-center{% if animate_view %} animated fadeInDown faster{% endif %}">
             {% block main_text %}
                 <h3 class="need-pd header-font-lp"><strong>{{ page_header_text }}</strong></h3>
             {% endblock %}
@@ -12,7 +12,7 @@
         <div class="col-lg-3 mb-2">
             <div class="row">
                 {% if categorias %}
-                <div class="col mb-2 animated fadeInDown fast">
+                <div class="col mb-2{% if animate_view %} animated fadeInDown fast{% endif %}">
                     <div class=list-group>
                         <a class="list-group-item">Categorias</a>
                         <div class="list-group-item">
@@ -29,14 +29,18 @@
             </div>
         </div>
         <div class="col-lg-9">
-            <div class="row mb-2">
-            {% block filters %}
-            {% endblock %}
-            </div>
+            <form method="get">
+                <div class="row mb-2">
+                    {% block filters %}
+                    {% endblock %}
+                </div>
+            </form>
+            {% block preloop %}
             <div id="item_list" class="row">
                 {% block loop %}
                 {% endblock %}
             </div>
+            {% endblock %}
         </div>
     </div>
 </div>

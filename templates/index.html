@@ -22,7 +22,7 @@
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
 </head>
 
-<body onload="load()">
+<body>
     {% block body %}
     {% block navbar %}
     <nav class="navbar navbar-expand-lg navbar-light" style="background-color: rgba(191,221,233,0.76)">
@@ -55,10 +55,6 @@
                     <a class="nav-link" href="{% url 'compra:listar-carrito' %}">Carrito</a>
                 </li>
             </ul>
-            <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2  animated fadeInDown" style="animation-delay: 100ms" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-dark my-2 my-sm-0  animated fadeInDown" style="animation-delay: 100ms" type="submit">Search</button>
-            </form>
             <ul class="navbar-nav ml-auto">
                 {% if not tienda_id %}
                 <li class="nav-item active animated fadeInDown" style="animation-delay: 100ms">
@@ -102,7 +98,6 @@
     <script src="{% static 'js/popper.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-    <script src="{% static 'js/filter.js' %}"></script>
     {% endblock body %}
 </body>
 </html>
