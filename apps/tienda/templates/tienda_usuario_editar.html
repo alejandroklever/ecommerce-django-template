@@ -3,23 +3,27 @@
 
 {% block content %}
 
-<div class="container" style="padding: 100px 150px">
-    <form method="post">
+<div class="d-flex justify-content-center" style="padding: 100px 150px">
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        <div class="card">
+        <div class="card" style="max-width: 500px">
             <div class="card-header">
                 <h3 class="text-center"><strong>Edite su tienda</strong></h3>
             </div>
-            <div class="container" style="padding: 25px 120px 10px;">
+            <div class="container" style="padding: 25px 25px 25px;">
                 <div class="row">
+                    <div class="card-img">
+                        {% if tienda.imagen %}
+                        <img class="col-12" src="{{ tienda.imagen.url }}" alt="">
+                        {% endif %}
+                    </div>
                     <div class="form-group col-lg-12">
                         <label for="id_nombre">Nombre</label>
                         <input class="form-control" type="text" name="nombre" id="id_nombre" value="{{ tienda.nombre }}">
-                    </div>
-                    <div class="form-group col-lg-12">
-                        <label for="id_username">Foto</label>
-                        <img class="col-12" src="{% static 'img/900x350.png' %}" alt="">
-                        <input class="form-control-file" type="file"  name="foto" id="id_foto" value="{{ tienda.imagen }}" accept="image/*">
+                        <div class="custom-file col-lg-12 mt-2">
+                            <label for="id_imagen" class="custom-file-label">Seleccionar</label>
+                            <input type="file" class="custom-file-input" name="imagen" id="id_imagen">
+                        </div>
                     </div>
                 </div>
                 <div class="text-center">

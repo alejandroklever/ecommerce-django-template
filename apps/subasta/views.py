@@ -2,14 +2,12 @@ import datetime
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import AnonymousUser
-from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
-from django.template import loader
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, UpdateView
 
 from apps.subasta.forms import SubastaCreateForm, SubastaUpdateForm
-from apps.subasta.models import SubastaFinalizada, SubastaEnCurso
+from apps.subasta.models import SubastaEnCurso
 from apps.tienda.models import Producto, Categoria, Tienda
 
 
@@ -144,30 +142,3 @@ class ActualizarSubasta(UpdateView):
         request.POST = request.POST.copy()
         request.POST['pujante'] = self.request.user
         return super(ActualizarSubasta, self).post(request, *args, **kwargs)
-
-
-def listar_subasta_terminadas(request):
-    user = request.user
-    subastas_terminada = SubastaFinalizada.objects.filter(tienda__usuario_id=user.id)
-    template = loader.get_template("subastas_finalizadas_listar.html")
-    context = {'subastas_finalizadas': subastas_terminada, 'user': user.username}
-    return HttpResponse(template.render(context, request))
-
-
-def pujar(request, name, precio):
-    _precio = float(precio)
-    _precio_nuevo = float(request.POST['new_price'])
-    if _precio_nuevo <= _precio:
-        return HttpResponseRedirect('/subasta/buscar')
-    subastas = SubastaEnCurso.objects.filter(precio_actual=precio, producto__nombre=name)
-    _subasta = subastas[0]
-    _subasta.pujante = request.user
-    _subasta.precio_actual = _precio_nuevo
-    _prod = _subasta.producto
-    _prod.precio = _precio_nuevo
-    _prod.save()
-    _subasta.save()
-    return HttpResponseRedirect('/subasta')
-
-# a = DestroyerThread(1, "Thread-1", 1)
-# a.start()
