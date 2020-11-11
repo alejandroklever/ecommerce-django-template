@@ -13,29 +13,53 @@ from apps.tienda.forms import StockForm
 from apps.tienda.models import Stock, Tienda, Categoria
 
 
+# noinspection PyAttributeOutsideInit
 class BankTransactionView(LoginRequiredMixin, FormView):
     form_class = PagoForm
+    template_name = 'pasarela_de_pago.html'
     success_url = reverse_lazy('tienda:listar-productos')
 
     def get_context_data(self, **kwargs):
         context = super(BankTransactionView, self).get_context_data(**kwargs)
-        context['pedido'] = Pedido.objects.get(id=self.kwargs['pk'])
+        self.stock = Stock.objects.get(id=self.kwargs['pk'])
+        self.tienda = Tienda.objects.get(id=self.kwargs['tienda_id'])
+        self.cantidad = self.kwargs['cantidad']
+
+        context['stock'] = self.stock
+        context['tienda'] = self.tienda
+        context['cantidad'] = self.cantidad
+        context['total'] = self.cantidad * self.stock.producto.precio
         context['tienda_id'] = self.request.user.tienda.id
         return context
 
-    def post(self, request: WSGIRequest, *args, **kwargs):
-        password = request.POST['password']
-        cuenta = request.POST['numero_de_cuenta']
-
-        if cuenta.isdigit() and len(cuenta) == 16 and request.user.check_password(password):
-            if not request.user.tienda.numero_de_cuenta:
-                request.user.tienda.numero_de_cuenta = cuenta
-                request.user.tienda.save()
-
-            if cuenta == request.user.tienda.numero_de_cuenta:
-                return redirect(self.get_success_url())
-
+    def post(self, request, *args, **kwargs):
+        cuenta = str(request.POST['numero_de_cuenta'])
+        ping = str(request.POST['ping'])
         context = self.get_context_data(**kwargs)
+
+        if len(cuenta) == 16 and len(ping) == 4:
+            time = datetime.datetime.now()
+            comprador = self.request.user
+            tienda = context['tienda']
+            stock = context['stock']
+            cantidad = context['cantidad']
+
+            if stock.cantidad - int(cantidad) < 0:
+                context['error_message'] = f'Solo quedan {stock.cantidad} de unidades de este producto en la tienda'
+                return self.render_to_response(context)
+
+            Compra(fecha_hora=time,
+                   tienda=tienda,
+                   comprador=comprador,
+                   producto=stock.producto,
+                   cantidad=cantidad).save()
+
+            form = StockForm({'cantidad': stock.cantidad - int(cantidad)}, instance=stock)
+            if form.is_valid():
+                form.save()
+
+            return redirect(self.get_success_url())
+
         context['error_message'] = 'Clave o numero de cuenta incorrecto'
         return self.render_to_response(context)
 
@@ -86,6 +110,7 @@ class DetalleProductosVista(LoginRequiredMixin, FormView):
         context['stock'] = self.stock
         context['tienda'] = self.tienda
 
+        context['tienda_id'] = self.request.user.tienda.id
         return context
 
     def post(self, request: WSGIRequest, *args, **kwargs):
@@ -98,29 +123,13 @@ class DetalleProductosVista(LoginRequiredMixin, FormView):
         else:
             raise Http404()
 
-    def __handle_pay_action(self, request, context):
-        time = datetime.datetime.now()
-        comprador = self.request.user
+    @staticmethod
+    def __handle_pay_action(request, context):
         tienda = context['tienda']
         stock = context['stock']
         cantidad = request.POST['cantidad']
 
-        if stock.cantidad - int(cantidad) < 0:
-            context['cantidad'] = int(cantidad)
-            context['error_message'] = 'No quedan suficientes productos en la tienda'
-            return self.render_to_response(context)
-
-        Compra(fecha_hora=time,
-               tienda=tienda,
-               comprador=comprador,
-               producto=stock.producto,
-               cantidad=cantidad).save()
-
-        form = StockForm({'cantidad': stock.cantidad - int(cantidad)}, instance=stock)
-        if form.is_valid():
-            form.save()
-
-        return redirect('tienda:listar-tiendas')
+        return redirect('compra:pagar-pedido', tienda.id, stock.id, int(cantidad))
 
     def __handle_add_cart_action(self, request, context):
         user = self.request.user

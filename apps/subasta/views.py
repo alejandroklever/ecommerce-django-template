@@ -19,6 +19,9 @@ class SubastaListOrderedFilterView(ListView):
     }
 
     def get_queryset(self):
+        for subasta in SubastaEnCurso.objects.all():
+            if subasta.hora_final > datetime.datetime.now():
+                subasta.producto.delete()
         return SubastaEnCurso.objects.all()
 
     def filter_query_set(self, query_set):

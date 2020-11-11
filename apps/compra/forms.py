@@ -12,6 +12,5 @@ class PedidoForm(forms.ModelForm):
 
 
 class PagoForm(forms.Form):
-    ping = forms.CharField(max_length=6)
-    password = forms.CharField(max_length=50)
-    numero_de_cuenta = forms.CharField(max_length=16)
+    ping = forms.IntegerField()
+    numero_de_cuenta = forms.IntegerField()

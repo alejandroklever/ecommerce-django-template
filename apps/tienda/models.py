@@ -17,7 +17,7 @@ class Tienda(models.Model):
     nombre = models.CharField(max_length=80)
     usuario = models.OneToOneField(User, on_delete=models.CASCADE)
     inventario = models.ManyToManyField(Producto, through='Stock')
-    imagen = models.ImageField(upload_to='tienda', default='default_tienda_image.jpg', null=True, blank=True)
+    imagen = models.ImageField(upload_to='tienda', default='default_shop_image.jpg', null=True, blank=True)
     correo = models.EmailField(max_length=200, default='noemail@gmail.com')
     numero_de_cuenta = models.CharField(max_length=16, blank=True, null=True)
 

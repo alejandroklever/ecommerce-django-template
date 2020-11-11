@@ -34,16 +34,15 @@
                             </div>
                             <div class="col-lg-4 mb2">
                                 <div class="form-group">
-                                    <label for="id_cantidad"></label>
                                     <input class="form-control" type="number" name="cantidad" id="id_cantidad" value="{% if cantidad %}{{ cantidad }}{% else %}1{% endif %}">
                                 </div>
                             </div>
                             <div class="col-lg-8 mb2">
                                 <div class="d-flex align-content-end justify-content-end">
                                     <div class="btn-group-ls text-center">
-                                        <button class="btn btn-primary" type="submit" name="action" value="pagar">Pagar</button>
-                                        <button class="btn btn-primary" type="submit" name="action" value="carrito">Carrito</button>
-                                        <a class="btn btn-danger" href="{% url 'tienda:visitar-tienda' stock.tienda.id %}">Cancelar</a>
+                                        <button class="btn btn-outline-primary" type="submit" name="action" value="pagar">Pagar</button>
+                                        <button class="btn btn-outline-primary" type="submit" name="action" value="carrito">Carrito</button>
+                                        <a class="btn btn-outline-danger" href="{% url 'tienda:visitar-tienda' stock.tienda.id %}">Cancelar</a>
                                     </div>
                                 </div>
                             </div>
