@@ -7,6 +7,7 @@ class Producto(models.Model):
     precio = models.FloatField()
     descripcion = models.TextField(null=True)
     imagen = models.ImageField(upload_to='producto', default='default_product_image.jpg', null=True, blank=True)
+    categoria = models.OneToOneField('Categoria', on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return f'{self.nombre} : {self.precio}'
@@ -17,6 +18,8 @@ class Tienda(models.Model):
     usuario = models.OneToOneField(User, on_delete=models.CASCADE)
     inventario = models.ManyToManyField(Producto, through='Stock')
     imagen = models.ImageField(upload_to='tienda', default='default_tienda_image.jpg', null=True, blank=True)
+    correo = models.EmailField(max_length=200)
+    numero_de_cuenta = models.CharField(max_length=12)
 
     def __str__(self):
         return f'{self.nombre}'

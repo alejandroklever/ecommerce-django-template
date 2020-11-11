@@ -5,12 +5,20 @@ from django.core.handlers.wsgi import WSGIRequest
 from django.http import Http404
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.views.generic import FormView
+from django.views.generic import FormView, UpdateView
 
 from apps.compra.forms import PedidoForm
 from apps.compra.models import Pedido, Compra, Carrito
 from apps.tienda.forms import StockForm
 from apps.tienda.models import Stock, Tienda, Categoria
+
+
+class BankTransactionView(LoginRequiredMixin, FormView):
+    pass
+
+
+class EditarPedido(UpdateView):
+    pass
 
 
 # noinspection PyAttributeOutsideInit
@@ -52,8 +60,9 @@ class DetalleProductosVista(LoginRequiredMixin, FormView):
         cantidad = request.POST['cantidad']
 
         if stock.cantidad - int(cantidad) < 0:
-            # TODO: check for count of items in stock
-            pass
+            context['cantidad'] = int(cantidad)
+            context['error_message'] = 'No quedan suficientes productos en la tienda'
+            return self.render_to_response(context)
 
         Compra(fecha_hora=time,
                tienda=tienda,

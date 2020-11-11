@@ -2,35 +2,48 @@
 
 
 {% block content %}
-    <div class="container" style="padding: 200px 200px 200px">
+    <div class="container d-flex justify-content-center" style="padding: 25px">
         <form method="post">
             {% csrf_token %}
-            <div class="card">
+            <div class="card" style="max-width: 600px">
                 <div class="card-header">
                     <h5 class="text-center"><strong>Detalles de {{ stock.producto.nombre }}</strong></h5>
                 </div>
-                <div class="container" style="padding: 0 75px">
+                <div class="container" style="padding: 0 52px">
                     <div class="card-body">
                         <div class="row">
+                            {% if stock.producto.imagen %}
+                            <div class="card-img d-flex justify-content-center">
+                                <img src="{{ stock.producto.imagen.url }}" alt="connected" style="max-height: 255px">
+                            </div>
+                            <br>
+                            {% endif %}
                             <div class="col-lg-12 mb-2">
-                                <p class="card-title">Descripcion : {{ stock.producto.descripcion }}</p>
+                                <p class="card-title"><strong>{{ stock.producto.descripcion }}</strong></p>
                             </div>
                             <div class="col-lg-12 mb-2">
-                                <p class="card-title">Precio : {{ stock.producto.precio }}</p>
+                                <p class="card-title"><strong>Precio: {{ stock.producto.precio }}</strong></p>
                             </div>
                             <div class="col-lg-12 mb-2">
-                                <p class="card-title">Cantidad : {{ stock.cantidad }}</p>
+                                <p class="card-title"><strong>Cantidad: {{ stock.cantidad }}</strong></p>
                             </div>
-                            <div class="col-lg-6 mb2">
+                            <div class="col-lg-12 mb-2">
+                                {% if error_message %}
+                                <div class="text-center text-danger animated fadeInDown faster"> {{ error_message }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-lg-4 mb2">
                                 <div class="form-group">
-                                    <input class="form-control" type="number" name="cantidad" id="id_cantidad" value="1">
+                                    <input class="form-control" type="number" name="cantidad" id="id_cantidad" value="{% if cantidad %}{{ cantidad }}{% else %}1{% endif %}">
                                 </div>
                             </div>
-                            <div class="col-lg-6 mb2">
-                                <div class="btn-group-ls text-center">
-                                    <button class="btn btn-primary" type="submit" name="action" value="pagar">Pagar</button>
-                                    <button class="btn btn-primary" type="submit" name="action" value="carrito">Carrito</button>
-                                    <a class="btn btn-danger" href="{% url 'tienda:visitar-tienda' stock.tienda.id %}">Cancelar</a>
+                            <div class="col-lg-8 mb2">
+                                <div class="d-flex align-content-end justify-content-end">
+                                    <div class="btn-group-ls text-center">
+                                        <button class="btn btn-primary" type="submit" name="action" value="pagar">Pagar</button>
+                                        <button class="btn btn-primary" type="submit" name="action" value="carrito">Carrito</button>
+                                        <a class="btn btn-danger" href="{% url 'tienda:visitar-tienda' stock.tienda.id %}">Cancelar</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
