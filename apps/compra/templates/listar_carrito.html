@@ -5,43 +5,23 @@
 <a class="btn btn-outline-danger" href="{% url 'index' %}">Regresar</a>
 {% endblock %}
 
-{% block preloop %}
-<form method="post">
-{% csrf_token %}
-    <div id="item_list" class="row">
-    {% for pedido in pedidos %}
-        <div class="col-lg-4 mb-3">
-            <div class="card">
-                <div class="card-body">
-                    <h6><strong>Producto: </strong>
-                        <a href="{% url 'compra:detalles-producto' pedido.tienda.id pedido.stock.id%}">
-                            {{ pedido.stock.producto.nombre }}
-                        </a>
-                    </h6>
-                    <h6><strong>Precio: </strong>{{ pedido.stock.producto.precio }}$</h6>
-                    <h6><strong>Unidades: </strong>{{ pedido.cantidad }}</h6>
-                    <div class="checkbox">
-                        <label for="{{ pedido.id }}">
-                            <strong>Seleccionar: </strong>
-                            <input type="checkbox" id="id_{{ pedido.id }}" name="pedido{{ pedido.id }}"/>
-                        </label>
-                    </div>
-                </div>
+{% block loop %}
+{% for pedido in pedidos %}
+    <div class="col-lg-4 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h6><strong>Producto: </strong>
+                    <a href="{% url 'compra:detalles-producto' pedido.tienda.id pedido.stock.id%}">
+                        {{ pedido.stock.producto.nombre }}
+                    </a>
+                </h6>
+                <h6><strong>Unidades: </strong>{{ pedido.cantidad }}</h6>
+                <h6><strong>Precio: </strong>{{ pedido.stock.producto.precio }}$</h6>
+                <h6><strong>Total a pagar: </strong>{{ pedido.total_a_pagar }}$</h6>
+                <a class="btn btn-outline-secondary" href="{% url 'compra:editar-pedido' pedido.id %}">Editar/Pagar</a>
+               <a class="btn btn-outline-danger" href="{% url 'compra:eliminar-pedido' pedido.id %}">Eliminar</a>
             </div>
         </div>
-        {% endfor %}
-        {% if pedidos %}
-        <div class="col-lg-12 mb-2 animated fadeInDown" style="animation-delay: 0.75s">
-            <button class="btn btn-outline-primary" type="submit">Pagar</button>
-        </div>
-    {% endif %}
     </div>
-</form>
+{% endfor %}
 {% endblock %}
-
-{#{% block content %}#}
-{#<div class="container" style="padding: 25px">#}
-{#    #}
-{##}
-{#</div>#}
-{#{% endblock %}#}

@@ -143,4 +143,5 @@ cython_debug/
 lapeseta.sqlite3
 .vscode
 
-media/
+media/producto
+media/tienda

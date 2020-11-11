@@ -19,6 +19,9 @@ class SubastaListOrderedFilterView(ListView):
     }
 
     def get_queryset(self):
+        for subasta in SubastaEnCurso.objects.all():
+            if subasta.hora_final > datetime.datetime.now():
+                subasta.producto.delete()
         return SubastaEnCurso.objects.all()
 
     def filter_query_set(self, query_set):
@@ -53,6 +56,32 @@ class SubastaListOrderedFilterView(ListView):
             context['search_value'] = query_dict['search']
 
         return context
+
+
+class ActualizarSubasta(UpdateView):
+    model = SubastaEnCurso
+    form_class = SubastaUpdateForm
+    template_name = 'subasta_actualizar.html'
+    context_object_name = 'subasta'
+    success_url = reverse_lazy('subasta:listar-subscripciones')
+
+    def get_context_data(self, **kwargs):
+        context = super(ActualizarSubasta, self).get_context_data(**kwargs)
+
+        context['min_value'] = str(self.get_object().precio_actual).replace(',', '.')
+        if not isinstance(self.request.user, AnonymousUser):
+            context['tienda_id'] = self.request.user.tienda.id
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        subasta = self.get_object()
+        if float(request.POST['precio_actual']) <= subasta.precio_actual:
+            return redirect('subasta:actualizar-subasta', subasta.id)
+
+        request.POST = request.POST.copy()
+        request.POST['pujante'] = self.request.user
+        return super(ActualizarSubasta, self).post(request, *args, **kwargs)
 
 
 class CrearSubasta(LoginRequiredMixin, CreateView):
@@ -160,29 +189,3 @@ class ListaDeSubscripcionesDeUsuario(LoginRequiredMixin, SubastaListOrderedFilte
             context['tienda_id'] = self.request.user.tienda.id
 
         return context
-
-
-class ActualizarSubasta(UpdateView):
-    model = SubastaEnCurso
-    form_class = SubastaUpdateForm
-    template_name = 'subasta_actualizar.html'
-    context_object_name = 'subasta'
-    success_url = reverse_lazy('subasta:listar-subscripciones')
-
-    def get_context_data(self, **kwargs):
-        context = super(ActualizarSubasta, self).get_context_data(**kwargs)
-
-        context['min_value'] = str(self.get_object().precio_actual).replace(',', '.')
-        if not isinstance(self.request.user, AnonymousUser):
-            context['tienda_id'] = self.request.user.tienda.id
-
-        return context
-
-    def post(self, request, *args, **kwargs):
-        subasta = self.get_object()
-        if float(request.POST['precio_actual']) <= subasta.precio_actual:
-            return redirect('subasta:actualizar-subasta', subasta.id)
-
-        request.POST = request.POST.copy()
-        request.POST['pujante'] = self.request.user
-        return super(ActualizarSubasta, self).post(request, *args, **kwargs)
