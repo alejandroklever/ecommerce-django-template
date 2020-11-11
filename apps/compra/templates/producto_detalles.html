@@ -1,5 +1,5 @@
 {% extends 'index_fixed.html' %}
-
+{% load static %}
 
 {% block content %}
     <div class="container d-flex justify-content-center" style="padding: 25px">
@@ -34,6 +34,7 @@
                             </div>
                             <div class="col-lg-4 mb2">
                                 <div class="form-group">
+                                    <label for="id_cantidad"></label>
                                     <input class="form-control" type="number" name="cantidad" id="id_cantidad" value="{% if cantidad %}{{ cantidad }}{% else %}1{% endif %}">
                                 </div>
                             </div>

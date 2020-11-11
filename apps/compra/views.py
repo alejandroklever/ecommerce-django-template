@@ -5,20 +5,66 @@ from django.core.handlers.wsgi import WSGIRequest
 from django.http import Http404
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.views.generic import FormView, UpdateView
+from django.views.generic import FormView, UpdateView, DeleteView
 
-from apps.compra.forms import PedidoForm
+from apps.compra.forms import PedidoForm, PagoForm
 from apps.compra.models import Pedido, Compra, Carrito
 from apps.tienda.forms import StockForm
 from apps.tienda.models import Stock, Tienda, Categoria
 
 
 class BankTransactionView(LoginRequiredMixin, FormView):
-    pass
+    form_class = PagoForm
+    success_url = reverse_lazy('tienda:listar-productos')
+
+    def get_context_data(self, **kwargs):
+        context = super(BankTransactionView, self).get_context_data(**kwargs)
+        context['pedido'] = Pedido.objects.get(id=self.kwargs['pk'])
+        context['tienda_id'] = self.request.user.tienda.id
+        return context
+
+    def post(self, request: WSGIRequest, *args, **kwargs):
+        password = request.POST['password']
+        cuenta = request.POST['numero_de_cuenta']
+
+        if cuenta.isdigit() and len(cuenta) == 16 and request.user.check_password(password):
+            if not request.user.tienda.numero_de_cuenta:
+                request.user.tienda.numero_de_cuenta = cuenta
+                request.user.tienda.save()
+
+            if cuenta == request.user.tienda.numero_de_cuenta:
+                return redirect(self.get_success_url())
+
+        context = self.get_context_data(**kwargs)
+        context['error_message'] = 'Clave o numero de cuenta incorrecto'
+        return self.render_to_response(context)
 
 
 class EditarPedido(UpdateView):
-    pass
+    model = Pedido
+    template_name = 'editar_pedido.html'
+    form_class = PedidoForm
+    context_object_name = 'pedido'
+    success_url = reverse_lazy('compra:listar-carrito')
+
+    def get_context_data(self, **kwargs):
+        context = super(EditarPedido, self).get_context_data(**kwargs)
+        pedido = Pedido.objects.get(id=self.kwargs['pk'])
+        context['tienda_id'] = self.request.user.tienda.id
+        context['total'] = pedido.stock.producto.precio * pedido.cantidad
+        return context
+
+
+class EliminarPedido(DeleteView):
+    model = Pedido
+    template_name = 'eliminar_pedido.html'
+    context_object_name = 'pedido'
+    success_url = reverse_lazy('compra:listar-carrito')
+
+    def get_context_data(self, **kwargs):
+        context = super(EliminarPedido, self).get_context_data(**kwargs)
+        context['tienda_id'] = self.request.user.tienda.id
+        return context
 
 
 # noinspection PyAttributeOutsideInit
@@ -83,7 +129,6 @@ class DetalleProductosVista(LoginRequiredMixin, FormView):
         cantidad = int(request.POST['cantidad'])
 
         carrito, _ = Carrito.objects.get_or_create(usuario_id=user.id)
-
         pedido, _ = Pedido.objects.get_or_create(defaults={'cantidad': 0, 'tienda': tienda},
                                                  stock_id=stock.id, usuario_id=user.id)
 
@@ -135,6 +180,9 @@ class ListarPedidosVista(LoginRequiredMixin, FormView):
         if 'search' in query_dict and query_dict['search']:
             context['search_value'] = query_dict['search']
 
+        for pedido in query_set:
+            pedido.total_a_pagar = pedido.cantidad * pedido.stock.producto.precio
+
         context['page_header_text'] = 'Su Carrito de Compras'
         context['pedidos'] = query_set
         context['tienda_id'] = self.request.user.tienda.id
@@ -145,12 +193,11 @@ class ListarPedidosVista(LoginRequiredMixin, FormView):
         post = [int(p.replace('pedido', '')) for p in request.POST if p.startswith('pedido')]
         pedidos = [Pedido.objects.get(id=x) for x in post]
         for pedido in pedidos:
-            self.__pay(pedido)
+            self.__pay(pedido, **kwargs)
             self.__del(pedido)
         return redirect(self.get_success_url())
 
-    @staticmethod
-    def __pay(pedido):
+    def __pay(self, pedido, **kwargs):
         fecha = datetime.datetime.now()
         comprador = pedido.usuario
         tienda = pedido.tienda
@@ -158,8 +205,10 @@ class ListarPedidosVista(LoginRequiredMixin, FormView):
         cantidad = pedido.cantidad
 
         if stock.cantidad - int(cantidad) < 0:
-            # TODO: check for count of items in stock
-            pass
+            context = self.get_context_data(**kwargs)
+            context['error_message'] = f'Esta pidiendo mas unidades de {stock.producto.nombre} que las que hay ' \
+                                       f'en la tienda {tienda.nombre}'
+            return self.render_to_response(context)
 
         Compra(fecha_hora=fecha, tienda=tienda, comprador=comprador, producto=stock.producto, cantidad=cantidad).save()
 

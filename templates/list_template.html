@@ -35,6 +35,11 @@
                     {% endblock %}
                 </div>
             </form>
+            {% if error_message %}
+                <div class="col-12 mt-2 mb-2">
+                    <div class="text-center text-danger animated fadeInDown faster"> {{ error_message }} </div>
+                </div>
+            {% endif %}
             {% block preloop %}
             <div id="item_list" class="row">
                 {% block loop %}

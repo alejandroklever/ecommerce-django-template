@@ -1,0 +1,66 @@
+{% extends 'index_fixed.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="container d-flex justify-content-center" style="padding: 25px">
+        <form method="post">
+            {% csrf_token %}
+            <div class="card" style="max-width: 600px">
+                <div class="card-header">
+                    <h5 class="text-center"><strong>Pasarela de Pago</strong></h5>
+                </div>
+                <div class="container" style="padding: 0 52px">
+                    <div class="card-body">
+                        <div class="row">
+                            {% if stock.producto.imagen %}
+                            <div class="card-img d-flex justify-content-center">
+                                <img src="{{ pedido.stock.producto.imagen.url }}" alt="connected" style="max-height: 255px">
+                            </div>
+                            <br>
+                            {% endif %}
+                            <div class="col-lg-12 mb-2">
+                                <p class="card-title"><strong>{{ pedido.stock.producto.descripcion }}</strong></p>
+                            </div>
+                            <div class="col-lg-12 mb-2">
+                                <p class="card-title"><strong>En existencia: {{ pedido.stock.cantidad }}</strong></p>
+                            </div>
+                            <div class="col-lg-12 mb-2">
+                                <p class="card-title"><strong>En pedido: {{ pedido.cantidad }}</strong></p>
+                            </div>
+                            <div class="col-lg-12 mb-2">
+                                <p class="card-title"><strong>Precio por unidad: {{ pedido.stock.producto.precio }}$</strong></p>
+                            </div>
+                            <div class="col-lg-12 mb-2">
+                                <p class="card-title"><strong>Total a pagar: {{ total }}$</strong></p>
+                            </div>
+                            <div class="col-lg-12 mb-2">
+                                {% if error_message %}
+                                <div class="text-center text-danger animated fadeInDown faster">{{ error_message }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-lg-4 mb2">
+                                <div class="form-group">
+                                    <input class="form-control"
+                                           type="number"
+                                           name="cantidad"
+                                           id="id_cantidad"
+                                           min="1"
+                                           value="{% if pedido.cantidad %}{{ pedido.cantidad }}{% else %}1{% endif %}">
+                                </div>
+                            </div>
+                            <div class="col-lg-8 mb2">
+                                <div class="d-flex justify-content-end">
+                                    <div class="btn-group-ls text-center">
+                                        <button class="btn btn-outline-primary" type="submit" name="action" value="update">Actualizar</button>
+                                        <a class="btn btn-outline-primary" href="{% url 'compra:listar-carrito' %}">Pagar</a>
+                                        <a class="btn btn-outline-danger" href="{% url 'compra:listar-carrito' %}">Cancelar</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}
